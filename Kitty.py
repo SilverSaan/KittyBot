@@ -48,7 +48,9 @@ async def iscore(ctx):
 @bot.tree.command(name='sync', description='Owner only')
 async def sync(interaction: discord.Interaction):
     if interaction.user.id == tokens['owner_token']:
-        await tree.sync()
+        await bot.tree.sync()
+        await interaction.response.send_message('Command tree synced.')
+
         print('Command tree synced.')
     else:
         await interaction.response.send_message('You must be my owner to use this command!')
