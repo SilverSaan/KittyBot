@@ -6,6 +6,7 @@ import night_market_generator as nmg
 
 import Dice_Processing as die
 import json
+from red_die import red as red_roll
 
 #Create token.json like {"discord_token": randToken, "owner_token": Owner Discord ID}
 def get_tokens():
@@ -51,6 +52,19 @@ async def sync(interaction: discord.Interaction):
         print('Command tree synced.')
     else:
         await interaction.response.send_message('You must be my owner to use this command!')
+
+@bot.hybrid_command()
+async def red(ctx, *, message):
+  try:
+    message = message.replace(' ', '')
+    message_response, crit_message = red_roll(message)
+    
+    string_response = f'**{ctx.author.mention} rolled: ' + message_response + '**\n'
+    if crit_message:
+      string_response += crit_message
+    await ctx.send(string_response)
+  except Exception as e:
+    await ctx.send(f"Error - {e}")
 
 @bot.command()
 async def sync(ctx):

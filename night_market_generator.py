@@ -237,7 +237,7 @@ def main():
 
 	if (reminder):
 		print("\n\nA little reminder for you, choom: a Poor Quality weapon jam on a roll of one, and an Excellent \
-	Quality weapon gives you +1 on all attack checks.")
+Quality weapon gives you +1 on all attack checks.")
 		print_stream += "\n\nA little reminder for you, choom: a Poor Quality weapon jam on a roll of one, and an Excellent \
 Quality weapon gives you +1 on all attack checks.\n"
 	return print_stream
