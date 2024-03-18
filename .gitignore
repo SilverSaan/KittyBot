@@ -1,0 +1,2 @@
+#Ignore Jsons (All of them contain sensitive information)
+*.json
