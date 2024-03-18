@@ -1,2 +1,4 @@
 #Ignore Jsons (All of them contain sensitive information)
-*.json
+token.json
+#Seriously fucked up
+__pycache__ 

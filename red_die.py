@@ -1,6 +1,7 @@
 #This archive dice rolls with the Cyberpunk Red Rules
 import re
 import Dice_Processing as dp 
+import json
 
 def format_roll(expr):
     rolls = re.split(r'([+\-*\/])', expr)
@@ -32,19 +33,29 @@ def format_roll(expr):
                     if add_d10: 
                         value = dp.roll_dice("1d10")[0][0]
                         results_string += f'+ {value}'
-                        message_to_user += f'CRIT :bangbang: {{+1d10({value})}}'
+                        message_to_user += f'CRIT :bangbang: {{+1d10({value})}} '
+                        
                     elif sub_d10:
                         value = dp.roll_dice("1d10")[0][0]
-
+                        if value == 10:
+                            special_sentence_request = "Preem! A 10!! ...oh shit! :skull:"
+                        else:
+                            special_sentence_request = ""
                         results_string += f'- {value}'
-                        message_to_user += f'You got unlucky choom :pensive: {{-1d10({value})}}'
+                        message_to_user += f'You got unlucky choom :pensive: {{-1d10({value}{special_sentence_request})}} '
+                        
                 else:
                     return None, "Invalid roll. Only rolls for multiple d6's and d10's are allowed, choom", None, 
             else:  # If it's an operator
                 results_string += part + " "
                 message_to_user += part + " "
     result = dp.calculate(results_string.strip())
-    message_to_user += f"= :star: {result} :star:"
+    if add_d10:
+        message_to_user += f"= :boom: {result} :boom:"
+    elif sub_d10:
+        message_to_user += f"= :melting_face: {result} :melting_face:"
+    else:
+        message_to_user += f"= :star: {result} :star:"
     return results_string.strip(), message_to_user.strip(), critical
 
 
@@ -69,68 +80,25 @@ def test_format_roll():
     print("All test cases passed successfully.")
 
 
-injury_effects = {
-    "Dismembered Arm": {
-        "Effect": "The Dismembered Arm is gone. You drop any items in that dismembered arm's hand immediately. Base Death Save Penalty is increased by 1.",
-        "Quick Fix": "N/A",
-        "Treatment": "Surgery DV17"
-    },
-    "Dismembered Hand": {
-        "Effect": "The Dismembered Hand is gone. You drop any items in the dismembered hand immediately. Base Death Save Penalty is increased by 1.",
-        "Quick Fix": "N/A",
-        "Treatment": "Surgery DV17"
-    },
-    "Collapsed Lung": {
-        "Effect": "-2 to MOVE (minimum 1). Base Death Save Penalty is increased by 1.",
-        "Quick Fix": "Paramedic DV15",
-        "Treatment": "Surgery DV15"
-    },
-    "Broken Ribs": {
-        "Effect": "At the end of every Turn where you move further than 4m/yds on foot, you re-suffer this Critical Injury's Bonus Damage directly to your Hit Points.",
-        "Quick Fix": "Paramedic DV13",
-        "Treatment": "Paramedic DV15 or Surgery DV13"
-    },
-    "Broken Arm": {
-        "Effect": "The Broken Arm cannot be used. You drop any items in that arm's hand immediately.",
-        "Quick Fix": "Paramedic DV13",
-        "Treatment": "Paramedic DV15 or Surgery DV13"
-    },
-    "Foreign Object": {
-        "Effect": "At the end of every Turn where you move further than 4m/yds on foot, you re-suffer this Critical Injury's Bonus Damage directly to your Hit Points. Quick Fix removes Injury Effect permanently.",
-        "Quick Fix": "First Aid or Paramedic DV13",
-        "Treatment": "Quick Fix removes Injury Effect permanently"
-    },
-    "Broken Leg": {
-        "Effect": "-4 to MOVE (minimum 1).",
-        "Quick Fix": "Paramedic DV13",
-        "Treatment": "Paramedic DV13, Paramedic DV15 or Surgery DV13"
-    },
-    "Torn Muscle": {
-        "Effect": "-2 to Melee Attacks. Quick Fix removes Injury Effect permanently.",
-        "Quick Fix": "First Aid or Paramedic DV13",
-        "Treatment": "Quick Fix removes Injury Effect permanently"
-    },
-    "Spinal Injury": {
-        "Effect": "Next Turn, you cannot take an Action, but you can still take a Move Action. Base Death Save Penalty is increased by 1.",
-        "Quick Fix": "Paramedic DV15",
-        "Treatment": "Surgery DV15"
-    },
-    "Crushed Fingers": {
-        "Effect": "-4 to all Actions involving that hand.",
-        "Quick Fix": "Paramedic DV11",
-        "Treatment": "Surgery DV15"
-    },
-    "Dismembered Leg": {
-        "Effect": "The Dismembered Leg is gone. -6 to MOVE (minimum 1). You cannot dodge attacks. Base Death Save Penalty is increased by 1.",
-        "Quick Fix": "N/A",
-        "Treatment": "Surgery DV15"
-    }
-}
+def get_injuries():
+    body_crits = None
+    head_crits = None
+    with open('critical_injury/body_crits.json') as f:
+        body_crits = json.load(f)
+    with open('critical_injury/head_crits.json') as f:
+        head_crits = json.load(f)
+        
+    return body_crits, head_crits
+
+body_crits, head_crits = get_injuries()
 
 
 def get_random_injury(injury_effects):
     import random
-    return random.choice(list(injury_effects.keys()))
+    roll_result = random.randint(1, 6) + random.randint(1, 6) - 2 # -2 to map with the 11 possible results [0] to [10]
+    roll_result = min(roll_result, len(injury_effects) - 1)    
+    return list(injury_effects.keys())[roll_result]
+    
 
 
 def red(expr):
@@ -139,9 +107,9 @@ def red(expr):
     if(crit):
         critical_message = "Critical Damage!! :skull:\n"
         critical_message += "I'm assuming you were aiming for your enemy's body, if you want me to roll a head critical injury use /crithead\n\n"
-        injury = get_random_injury(injury_effects)
+        injury = get_random_injury(body_crits)
         critical_message += injury + "\n"
-        critical_message += "Effect:" + injury_effects[injury]["Effect"]
+        critical_message += "Effect:" + body_crits[injury]["Effect"]
         
     return message, critical_message
     
