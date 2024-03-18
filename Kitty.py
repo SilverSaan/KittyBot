@@ -7,6 +7,7 @@ import night_market_generator as nmg
 import Dice_Processing as die
 import json
 
+#Create token.json like {"discord_token": randToken, "owner_token": Owner Discord ID}
 def get_tokens():
   with open('token.json') as f:
     return(json.load(f))
@@ -43,7 +44,7 @@ async def iscore(ctx):
   await ctx.send("I'm not supposed to be used for DnD but here's your Initial Scores for it choom. /ᐠ - ⩊ -マ Ⳋ\n" +
     die.initialScoreRoll())
 
-@tree.command(name='sync', description='Owner only')
+@bot.tree.command(name='sync', description='Owner only')
 async def sync(interaction: discord.Interaction):
     if interaction.user.id == tokens['owner_token']:
         await tree.sync()
@@ -61,8 +62,8 @@ async def sync(ctx):
         await ctx.send('You must be my owner to use this command!')
 
 @bot.hybrid_command()
-async def night_market(ctx):
-  await ctx.send(f'**{ctx.author.mention}' + "Generating your Night Market, this will take only a sec ₍^ >ヮ<^₎ .ᐟ.ᐟ")
+async def nightmarket(ctx):
+  await ctx.send(f'**{ctx.author.mention}' + "Generating your Night Market, this will take only a sec ₍^ >ヮ<^₎ .ᐟ.ᐟ**")
   await ctx.send(nmg.main())
   
 
