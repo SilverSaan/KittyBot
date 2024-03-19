@@ -7,6 +7,7 @@ import night_market_generator as nmg
 import Dice_Processing as die
 import json
 from red_die import red as red_roll
+from streetrat_creator.streetrat import RoleSelectView
 
 #Create token.json like {"discord_token": randToken, "owner_token": Owner Discord ID}
 def get_tokens():
@@ -26,7 +27,7 @@ tree = app_commands.CommandTree(client)
 
 @bot.hybrid_command()
 async def hello(ctx):
-  await ctx.send('Hello, my name is Kitty, Exotic from Biotechnica\'s Zoo and your resident Cyberpunk (Being cute doesn\'t pay rent) catgirl ≽^•⩊•^≼\n\
+  await ctx.send('Hello, my name is Kitty, Exotic from Biotechnica\'s Zoo and your resident Cyberpunk (Being cute doesn\'t pay rent) catgirl ≽^•⩊•^≼\n\n\
 I can roll dice for you, and also generate some useful things (More to come btw), like Night Markets, NPC Ideas... aaaand that\'s it \*ฅ^•ﻌ•^ฅ*\n\
 If you want DnD utilities try to convince my creator @silversaan to develop my father (The Innkeeper / Tavern Bot)')
 
@@ -82,10 +83,16 @@ async def nightmarket(ctx):
   await ctx.send(f'**{ctx.author.mention}' + "Generating your Night Market, this will take only a sec ₍^ >ヮ<^₎ .ᐟ.ᐟ**")
   await ctx.send(nmg.main())
   
-
+@bot.command()
+async def streetrat(ctx):
+    roles = ["Solo", "Rockerboy", "Netrunner", "Tech", "Medtech", "Media", "Lawman", "Exec", "Fixer", "Nomad"]
+    view = RoleSelectView()
+    await ctx.send("Select a role:", view=view, ephemeral=True)
 
 @bot.event
 async def on_ready():
    print("Bot is ready and online")
+   
+
 
 bot.run(DISCORD_TOKEN)
