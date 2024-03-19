@@ -9,6 +9,9 @@ import json
 from red_die import red as red_roll
 from streetrat_creator.streetrat import RoleSelectView
 
+import traceback
+import sys
+
 #Create token.json like {"discord_token": randToken, "owner_token": Owner Discord ID}
 def get_tokens():
   with open('token.json') as f:
@@ -83,16 +86,60 @@ async def nightmarket(ctx):
   await ctx.send(f'**{ctx.author.mention}' + "Generating your Night Market, this will take only a sec ₍^ >ヮ<^₎ .ᐟ.ᐟ**")
   await ctx.send(nmg.main())
   
-@bot.command()
+@bot.hybrid_command()
 async def streetrat(ctx):
     roles = ["Solo", "Rockerboy", "Netrunner", "Tech", "Medtech", "Media", "Lawman", "Exec", "Fixer", "Nomad"]
     view = RoleSelectView()
     await ctx.send("Select a role:", view=view, ephemeral=True)
+    
+@bot.event
+async def on_voice_state_update(member, before, after):
+    if before.channel is None and after.channel is not None:
+        # User joined a voice channel
+        print(f"{member.display_name} joined the voice channel {after.channel.name}")
+    elif before.channel is not None and after.channel is None:
+        # User left a voice channel
+        print(f"{member.display_name} left the voice channel {before.channel.name}")
+        
+@bot.hybrid_command()
+async def dchance(ctx,chance): 
+  try:
+    ch = None
+    if(float(chance) < 1 and float(chance) > 0 ):
+      ch = int(float(chance) * 100)
+      await ctx.send(f"Assuming you meant {int(float(chance) * 10)}%")
+    elif(int(chance) <= 100 and int(chance) >= 1):
+      ch = int(float(chance))
+    else:
+      await ctx.send(f'{ctx.author.mention} please introduce a number between 1 and 100 choom')
+
+    if(ch): 
+      roll, value = die.roll_dice("1d100")
+      if value <= ch: 
+        await ctx.send(f'{ctx.author.mention} **You got it choom!** Rolled a {value} on the chance of {ch}%')
+      if value > ch: 
+        await ctx.send(f'{ctx.author.mention} did you forget your LUCK points?! **Failed!** Rolled a {value} on the chance of {ch}%')
+  except Exception as e:
+    await ctx.send(f'{ctx.author.mention} please introduce a number between 1 and 100 choom')
+
 
 @bot.event
 async def on_ready():
    print("Bot is ready and online")
-   
+
+@bot.event
+async def on_command_error(ctx: commands.Context, error):
+  error = getattr(error, 'original', error)
+  # Handle your errors here
+  if isinstance(error, commands.MemberNotFound):
+      await ctx.send("I could not find member '{error.argument}'. Please try again")
+
+  elif isinstance(error, commands.MissingRequiredArgument):
+      await ctx.send(f"'{error.param.name}' is a required argument, choom.")
+  else:
+      # All unhandled errors will print their original traceback
+      print(f'Ignoring exception in command {ctx.command}:', file=sys.stderr)
+      traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
 
 
 bot.run(DISCORD_TOKEN)
