@@ -111,16 +111,16 @@ async def dchance(ctx,chance):
     elif(int(chance) <= 100 and int(chance) >= 1):
       ch = int(float(chance))
     else:
-      await ctx.send(f'{ctx.author.mention} please introduce a number between 1 and 100 choom')
+      await ctx.send(f'{ctx.author.mention} please input a number between 1 and 100 choom')
 
     if(ch): 
       roll, value = die.roll_dice("1d100")
       if value <= ch: 
-        await ctx.send(f'{ctx.author.mention} **You got it choom!** Rolled a {value} on the chance of {ch}%')
+        await ctx.send(f'{ctx.author.mention} **Success!** Rolled a {value} on the chance of {ch}%! **You got it choom!**')
       if value > ch: 
-        await ctx.send(f'{ctx.author.mention} did you forget your LUCK points?! **Failed!** Rolled a {value} on the chance of {ch}%')
+        await ctx.send(f'{ctx.author.mention} **Failed!** Rolled a {value} on the chance of {ch}%! Did you forget your LUCK points?! ')
   except Exception as e:
-    await ctx.send(f'{ctx.author.mention} please introduce a number between 1 and 100 choom')
+    await ctx.send(f'{ctx.author.mention} please input a number between 1 and 100 choom')
 
 
 @bot.event
