@@ -59,7 +59,6 @@ class RoleSelectView(discord.ui.View):
         self.humanity = derived_stat.calculate_humanity(self.stats["emp"])
         await interaction.response.send_message(f"Selected role: Solo\nStats: {self.format_stats(self.stats)}\nSkill: {self.skill}\nHP: {self.hp}\nHumanity: {self.humanity}", ephemeral=True)
         self.clear_items()
-        await self.remove_view(interaction)
         
 
     @discord.ui.button(label='Rockerboy', style=discord.ButtonStyle.primary)
@@ -72,7 +71,6 @@ class RoleSelectView(discord.ui.View):
 
         await interaction.response.send_message(f"Selected role: Rockerboy\nStats: {self.format_stats(self.stats)}\nSkill: {self.skill}\nHP: {self.hp}\nHumanity: {self.humanity}", ephemeral=True)
         self.clear_items()
-        await self.remove_view(interaction)
 
 
     @discord.ui.button(label='Netrunner', style=discord.ButtonStyle.primary)
@@ -85,7 +83,6 @@ class RoleSelectView(discord.ui.View):
 
         await interaction.response.send_message(f"Selected role: Netrunner\nStats: {self.format_stats(self.stats)}\nSkill: {self.skill}\nHP: {self.hp}\nHumanity: {self.humanity}", ephemeral=True)
         self.clear_items()
-        await self.remove_view(interaction)
 
     @discord.ui.button(label='Tech', style=discord.ButtonStyle.primary)
     async def tech_button(self, interaction, button):
@@ -97,7 +94,6 @@ class RoleSelectView(discord.ui.View):
 
         await interaction.response.send_message(f"Selected role: Tech\nStats: {self.format_stats(self.stats)}\nSkill: {self.skill}\n\nHP: {self.hp}\nHumanity: {self.humanity}", ephemeral=True)
         self.clear_items()
-        await self.remove_view(interaction)
 
     @discord.ui.button(label='Medtech', style=discord.ButtonStyle.primary)
     async def medtech_button(self, interaction, button):
@@ -109,7 +105,6 @@ class RoleSelectView(discord.ui.View):
 
         await interaction.response.send_message(f"Selected role: Medtech\nStats: {self.format_stats(self.stats)}\nSkill: {self.skill}\n\nHP: {self.hp}\nHumanity: {self.humanity}", ephemeral=True)
         self.clear_items()
-        await self.remove_view(interaction)
 
 
     @discord.ui.button(label='Media', style=discord.ButtonStyle.primary)
@@ -122,7 +117,6 @@ class RoleSelectView(discord.ui.View):
 
         await interaction.response.send_message(f"Selected role: Media\nStats: {self.format_stats(self.stats)}\nSkill: {self.skill}\nHP: {self.hp}\nHumanity: {self.humanity}", ephemeral=True)
         self.clear_items()
-        await self.remove_view(interaction)
 
 
     @discord.ui.button(label='Lawman', style=discord.ButtonStyle.primary)
@@ -136,7 +130,6 @@ class RoleSelectView(discord.ui.View):
 
         await interaction.response.send_message(f"Selected role: Lawman\nStats: {self.format_stats(self.stats)}\nSkill: {self.skill}\nHP: {self.hp}\nHumanity: {self.humanity}", ephemeral=True)
         self.clear_items()
-        await self.remove_view(interaction)
 
 
     @discord.ui.button(label='Exec', style=discord.ButtonStyle.primary)
@@ -149,7 +142,6 @@ class RoleSelectView(discord.ui.View):
 
         await interaction.response.send_message(f"Selected role: Exec\nStats: {self.format_stats(self.stats)}\nSkill: {self.skill}\nHP: {self.hp}\nHumanity: {self.humanity}", ephemeral=True)
         self.clear_items()
-        await self.remove_view(interaction)
 
     @discord.ui.button(label='Fixer', style=discord.ButtonStyle.primary)
     async def fixer_button(self, interaction, button):
@@ -162,7 +154,6 @@ class RoleSelectView(discord.ui.View):
 
         await interaction.response.send_message(f"Selected role: Fixer\nStats: {self.format_stats(self.stats)}\nSkill: {self.skill}\nHP: {self.hp}\nHumanity: {self.humanity}", ephemeral=True)
         self.clear_items()
-        await self.remove_view(interaction)
 
     @discord.ui.button(label='Nomad', style=discord.ButtonStyle.primary)
     async def nomad_button(self, interaction, button):
@@ -175,4 +166,3 @@ class RoleSelectView(discord.ui.View):
 
         await interaction.response.send_message(f"Selected role: Nomad\nStats: {self.format_stats(self.stats)}\nSkill: {self.skill}\nHP: {self.hp}\nHumanity: {self.humanity}", ephemeral=True)
         self.clear_items()
-        await self.remove_view(interaction)

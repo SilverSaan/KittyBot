@@ -7,6 +7,7 @@ import night_market_generator as nmg
 import Dice_Processing as die
 import json
 from red_die import red as red_roll
+from red_die import get_head_injury, get_body_injury
 from streetrat_creator.streetrat import RoleSelectView
 
 import traceback
@@ -24,7 +25,7 @@ DISCORD_TOKEN = tokens['discord_token']
 
 intents = discord.Intents.default()
 intents.message_content = True
-bot = commands.Bot(command_prefix='!', intents=intents)
+bot = commands.Bot(command_prefix=';', intents=intents)
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
 
@@ -54,7 +55,6 @@ async def sync(interaction: discord.Interaction):
     if interaction.user.id == tokens['owner_token']:
         await bot.tree.sync()
         await interaction.response.send_message('Command tree synced.')
-
         print('Command tree synced.')
     else:
         await interaction.response.send_message('You must be my owner to use this command!')
@@ -71,6 +71,16 @@ async def red(ctx, *, message):
     await ctx.send(string_response)
   except Exception as e:
     await ctx.send(f"Error - {e}")
+    
+@bot.hybrid_command()
+async def crithead(ctx):
+  response =  get_head_injury()
+  await ctx.send(response)
+
+@bot.hybrid_command()
+async def critbody(ctx):
+  response = get_body_injury()
+  await ctx.send(response)
 
 @bot.command()
 async def sync(ctx):

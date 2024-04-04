@@ -100,6 +100,30 @@ def get_random_injury(injury_effects):
     return list(injury_effects.keys())[roll_result]
     
 
+def get_body_injury():
+    
+    critical_message = "Body Critical Injury!\n"
+    injury = get_random_injury(body_crits)
+    critical_message += injury + "\n"
+    critical_message += "Quick Fix: " + body_crits[injury]["Quick Fix"] + "\n"
+    critical_message += "Treatment: " + body_crits[injury]["Treatment"] + "\n\n"
+
+    critical_message += "Effect: " + body_crits[injury]["Effect"]
+    
+    return critical_message
+
+
+def get_head_injury(): 
+    critical_message = "Head Critical Injury!\n"
+    injury = get_random_injury(head_crits)
+    critical_message += injury + "\n"
+    critical_message += "Quick Fix: " + head_crits[injury]["Quick Fix"] + "\n"
+    critical_message += "Treatment: " + head_crits[injury]["Treatment"] + "\n\n"
+
+    critical_message += "Effect: " + head_crits[injury]["Effect"]
+    
+    return critical_message
+
 
 def red(expr):
     critical_message = None
@@ -109,7 +133,9 @@ def red(expr):
         critical_message += "I'm assuming you were aiming for your enemy's body, if you want me to roll a head critical injury use /crithead\n\n"
         injury = get_random_injury(body_crits)
         critical_message += injury + "\n"
-        critical_message += "Effect:" + body_crits[injury]["Effect"]
+        critical_message += "Quick Fix: " + body_crits[injury]["Quick Fix"] + "\n"
+        critical_message += "Treatment: " + body_crits[injury]["Treatment"] + "\n\n"
+        critical_message += "Effect: " + body_crits[injury]["Effect"]
         
     return message, critical_message
     
