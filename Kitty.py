@@ -101,7 +101,7 @@ async def streetrat(ctx):
     roles = ["Solo", "Rockerboy", "Netrunner", "Tech", "Medtech", "Media", "Lawman", "Exec", "Fixer", "Nomad"]
     view = RoleSelectView()
     await ctx.send("Select a role:", view=view, ephemeral=True)
-    
+
 @bot.event
 async def on_voice_state_update(member, before, after):
     if before.channel is None and after.channel is not None:
