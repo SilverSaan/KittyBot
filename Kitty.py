@@ -9,6 +9,7 @@ import json
 from red_die import red as red_roll
 from red_die import get_head_injury, get_body_injury
 from streetrat_creator.streetrat import RoleSelectView
+from net_gen.netInterface import NetInterface
 
 import traceback
 import sys
@@ -24,6 +25,7 @@ DISCORD_TOKEN = tokens['discord_token']
 
 
 intents = discord.Intents.default()
+intents.members = True
 intents.message_content = True
 bot = commands.Bot(command_prefix=';', intents=intents)
 client = discord.Client(intents=intents)
@@ -53,7 +55,8 @@ async def iscore(ctx):
 @bot.tree.command(name='sync', description='Owner only')
 async def sync(interaction: discord.Interaction):
     if interaction.user.id == tokens['owner_token']:
-        await bot.tree.sync()
+        await bot.tree.sync(guild=None)
+        await bot.tree.sync(guild=interaction.guild)
         await interaction.response.send_message('Command tree synced.')
         print('Command tree synced.')
     else:
@@ -88,6 +91,7 @@ async def sync(ctx):
     if ctx.author.id == tokens['owner_token']:
         await bot.tree.sync()
         await ctx.send('Command tree synced.')
+        await bot.tree.sync(guild=discord.Object(id=516615057589796864))
     else:
         await ctx.send('You must be my owner to use this command!')
 
@@ -101,6 +105,11 @@ async def streetrat(ctx):
     roles = ["Solo", "Rockerboy", "Netrunner", "Tech", "Medtech", "Media", "Lawman", "Exec", "Fixer", "Nomad"]
     view = RoleSelectView()
     await ctx.send("Select a role:", view=view, ephemeral=True)
+
+@bot.hybrid_command()
+async def netgen(ctx):
+    view = NetInterface()
+    await ctx.send("Select a Difficulty:", view=view, ephemeral=True)
 
 @bot.event
 async def on_voice_state_update(member, before, after):
@@ -131,7 +140,52 @@ async def dchance(ctx,chance):
         await ctx.send(f'{ctx.author.mention} **Failed!** Rolled a {value} on the chance of {ch}%! Did you forget your LUCK points?! ')
   except Exception as e:
     await ctx.send(f'{ctx.author.mention} please input a number between 1 and 100 choom')
+    
+@bot.hybrid_command()
+@commands.has_permissions(administrator=True)
+async def notify_dm(ctx, role: discord.Role, message: str):
+  members = role.members
+  #print(members)
+  for member in members:
+    try:
+      await member.send(message)
+      await ctx.send(f"Message sent to {member.name}", ephemeral=True)
+    except discord.Forbidden:
+      await ctx.send(f"Failed to send message to {member.name}",ephemeral=True)
+      
+@bot.hybrid_command(name="encounter_list", description="Commands to do with encounter list")
+async def encounter_list(ctx, operation: str, arg1: str = None, arg2: str = None):
+  if operation in ["help", "h"]:
+    await ctx.send("Commands to do with Encounters, operations:\ncreate [list_name]\nadd [list_name] [description]\ndelete [list_name]")
+  elif operation == "create":
+    if arg1 is None:
+      await ctx.send("Usage: encounter_list create [list_name]")
+    else:
+      list_name = arg1
+      await ctx.send(f"Creating encounter list '{list_name}'...")
+      # Call function to create list
+  elif operation == "add":
+    if arg1 is None or arg2 is None:
+      await ctx.send("Usage: encounter_list add [list_name] [description]")
+    else:
+      list_name = arg1
+      description = arg2
+      await ctx.send(f"Adding encounter to list '{list_name}': {description}")
+      # Call function to add encounter
+  elif operation == "delete":
+    if arg1 is None:
+      await ctx.send("Usage: encounter_list delete [list_name]")
+    else:
+      list_name = arg1
+      await ctx.send(f"Deleting encounter list '{list_name}'...")
+      # Call function to delete list
+  else:
+    await ctx.send("Invalid operation. Type '!encounter_list help' for usage instructions.")
 
+@notify_dm.error
+async def notify_dm_error(ctx, error):
+  if isinstance(error, commands.MissingPermissions):
+    await ctx.send("You must be an administrator to use this command.", ephemeral=True)
 
 @bot.event
 async def on_ready():
@@ -150,6 +204,7 @@ async def on_command_error(ctx: commands.Context, error):
       # All unhandled errors will print their original traceback
       print(f'Ignoring exception in command {ctx.command}:', file=sys.stderr)
       traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
+
 
 
 bot.run(DISCORD_TOKEN)
