@@ -10,7 +10,7 @@ class NetInterface(discord.ui.View):
         self.difficulty = None
         self.floors = None
         
-    @discord.ui.button(label='Solo', style=discord.ButtonStyle.red)
+    @discord.ui.button(label='Basic', style=discord.ButtonStyle.blurple)
     async def chooseDifficultyBasic(self, interaction, button):
         
         self.difficulty = 1
@@ -23,20 +23,50 @@ class NetInterface(discord.ui.View):
         
         print("DEBUG", arch)
         
-        await interaction.response.edit_message(content=f"```{arch}``` \n\n {legend}", view=None)
+        await interaction.response.edit_message(content=f"```{arch}```\n{legend}", view=None)
 
 
-    @discord.ui.button(label='Solo', style=discord.ButtonStyle.red)
+    @discord.ui.button(label='Standard', style=discord.ButtonStyle.green)
     async def chooseDifficultyStandard(self, interaction, button):
         
         self.difficulty = 2
+        self.floors = netgen.getArchitecture()
+        netgen.setIDs(self.floors)
+        netgen.populateFloors(self.floors)
         
-    @discord.ui.button(label='Solo', style=discord.ButtonStyle.red)
+        arch = netgen.printArchitecture(self.floors)
+        legend = netgen.printLegend(self.floors, self.difficulty)
+        
+        print("DEBUG", arch)
+        
+        await interaction.response.edit_message(content=f"```{arch}```\n{legend}", view=None)
+        
+    @discord.ui.button(label='Uncommon', style=discord.ButtonStyle.secondary)
     async def chooseDifficultyUncommon(self, interaction, button):
         
         self.difficulty = 3
+        self.floors = netgen.getArchitecture()
+        netgen.setIDs(self.floors)
+        netgen.populateFloors(self.floors)
         
-    @discord.ui.button(label='Solo', style=discord.ButtonStyle.red)
+        arch = netgen.printArchitecture(self.floors)
+        legend = netgen.printLegend(self.floors, self.difficulty)
+        
+        print("DEBUG", arch)
+        
+        await interaction.response.edit_message(content=f"```{arch}```\n{legend}", view=None)
+        
+    @discord.ui.button(label='Advanced', style=discord.ButtonStyle.red)
     async def chooseDifficultyAdvanced(self, interaction, button):
         
         self.difficulty = 4
+        self.floors = netgen.getArchitecture()
+        netgen.setIDs(self.floors)
+        netgen.populateFloors(self.floors)
+        
+        arch = netgen.printArchitecture(self.floors)
+        legend = netgen.printLegend(self.floors, self.difficulty)
+        
+        print("DEBUG", arch)
+        
+        await interaction.response.edit_message(content=f"```{arch}```\n{legend}", view=None)
