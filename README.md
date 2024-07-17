@@ -13,11 +13,14 @@ Roll dice directly within Discord using simple commands:
 - `/red 4d6`: Rolls D6's based on Cyberpunk Red's damage logic. If two sixes are rolled, it will automatically roll for critical damage.
 - `/roll ndx`: *x* and *n* must be numbers. This command rolls any dice.
 
-## Reference Lookup
+## Reference Lookup (TODO)
 Access rules, lore, and other game information quickly and easily.
 
-## Random Generators
+## Random Generators 
 Generate random NPCs, locations, items, night markets and more to spark creativity and add depth to your game.
+- Made Character Generation According to the Streetrat rules on CPR Core
+- Made Net Architecture Generation using https://github.com/MildarAA/NetGenerator
+- Made Night Market Generation command using https://gitlab.com/shindranel/night-market-generator/-/blob/master/night_market_generator.py 
 
 Support and Feedback
 
