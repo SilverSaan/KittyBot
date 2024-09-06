@@ -115,7 +115,7 @@ def getNumberOfBraches(size):
     maxBranches = size - 4
     n_branches = 0
     while (n_branches < maxBranches):
-        if (rollD10() >= 7):
+        if (rollD10() >= 5):
             n_branches +=1
         else:
             break

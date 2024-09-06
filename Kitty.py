@@ -152,7 +152,18 @@ async def notify_dm(ctx, role: discord.Role, message: str):
       await ctx.send(f"Message sent to {member.name}", ephemeral=True)
     except discord.Forbidden:
       await ctx.send(f"Failed to send message to {member.name}",ephemeral=True)
-      
+
+@bot.hybrid_command() 
+async def namegenerate(ctx, type):
+  import names
+  if type.lower() == "fem": 
+    await ctx.send(f"Generated Name: \'{names.get_full_name(gender='female')}\'")
+  elif type.lower() == "male": 
+    await ctx.send(f"Generated Name: \'{names.get_full_name(gender='male')}\' ")
+  else:
+    await ctx.send(f"Wrong Input Type should be 'fem' or 'male'")
+    
+    
 @bot.hybrid_command(name="encounter_list", description="Commands to do with encounter list")
 async def encounter_list(ctx, operation: str, arg1: str = None, arg2: str = None):
   if operation in ["help", "h"]:
