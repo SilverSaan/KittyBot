@@ -21,7 +21,29 @@ def get_tokens():
   
 tokens = get_tokens()
 DISCORD_TOKEN = tokens['discord_token']
+AUTH_TOKEN = tokens['auth_key']
+BOT_NAME = tokens['bot_name']
 
+
+def get_data():
+    role_skill = None
+    role_stats = None
+    skills = None
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    roles_path = os.path.join(current_dir, 'jsons', 'roles.json')
+    stats_path = os.path.join(current_dir, 'jsons', 'statitics_role.json')
+    skills_path = os.path.join(current_dir, 'jsons', 'skills.json')
+    
+    with open(roles_path) as f:
+        role_skill = json.load(f)
+    with open(stats_path) as f:
+        role_stats = json.load(f)
+    with open(skills_path) as f:
+        skills = json.load(f)
+    
+    return role_skill, role_stats, skills
+
+skill_role, stat_tables, skills = get_data()
 
 
 intents = discord.Intents.default()
@@ -91,7 +113,14 @@ async def sync(ctx):
     if ctx.author.id == tokens['owner_token']:
         await bot.tree.sync()
         await ctx.send('Command tree synced.')
-        await bot.tree.sync(guild=discord.Object(id=516615057589796864))
+    else:
+        await ctx.send('You must be my owner to use this command!')
+
+@bot.command()
+async def shutdown(ctx):
+    if ctx.author.id == tokens['owner_token']:
+        await ctx.send('Shutting down... Bye bye!')
+        await bot.close()
     else:
         await ctx.send('You must be my owner to use this command!')
 
@@ -102,8 +131,8 @@ async def nightmarket(ctx):
   
 @bot.hybrid_command()
 async def streetrat(ctx):
-    roles = ["Solo", "Rockerboy", "Netrunner", "Tech", "Medtech", "Media", "Lawman", "Exec", "Fixer", "Nomad"]
-    view = RoleSelectView()
+    # roles = ["Solo", "Rockerboy", "Netrunner", "Tech", "Medtech", "Media", "Lawman", "Exec", "Fixer", "Nomad"]
+    view = RoleSelectView(skill_role, stat_tables, skills)
     await ctx.send("Select a role:", view=view, ephemeral=True)
 
 @bot.hybrid_command()
@@ -155,7 +184,7 @@ async def notify_dm(ctx, role: discord.Role, message: str):
 
 @bot.hybrid_command() 
 async def namegenerate(ctx, type):
-  import names
+  import names # type: ignore
   if type.lower() == "fem": 
     await ctx.send(f"Generated Name: \'{names.get_full_name(gender='female')}\'")
   elif type.lower() == "male": 
@@ -217,5 +246,26 @@ async def on_command_error(ctx: commands.Context, error):
       traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
 
 
+
+#GET SELF FROM BACKEND
+async def connect_backend():
+  print("Yo")
+  import async_elysia.bot_requests as back_end
+  from async_elysia.el_socket import send_bot_status, run_task
+  bot_name = BOT_NAME
+  auth_token = AUTH_TOKEN
+
+  status = back_end.get_self(auth_token)  # True if registration successful, False otherwise
+
+  if status:
+      await run_task(bot_name, auth_token, bot) #Sends periodic status updates to the backend
+      print("Bot registration successful. WebSocket connection established.")
+  else:
+      print("Bot registration failed. Running without backend access.")
+
+@bot.event
+async def on_ready():
+    print("Bot is ready and online")
+    await connect_backend()
 
 bot.run(DISCORD_TOKEN)

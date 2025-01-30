@@ -83,9 +83,9 @@ def test_format_roll():
 def get_injuries():
     body_crits = None
     head_crits = None
-    with open('critical_injury/body_crits.json') as f:
+    with open('jsons/body_crits.json') as f:
         body_crits = json.load(f)
-    with open('critical_injury/head_crits.json') as f:
+    with open('jsons/head_crits.json') as f:
         head_crits = json.load(f)
         
     return body_crits, head_crits
