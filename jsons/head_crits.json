@@ -1,0 +1,57 @@
+{
+    "Lost Eye": {
+        "Effect": "The Lost Eye is gone. -4 to Ranged Attacks & Perception Checks involving vision. Base Death Save Penalty is increased by 1.",
+        "Quick Fix": "N/A",
+        "Treatment": "Surgery DV17"
+    },
+    "Brain Injury": {
+        "Effect": "-2 to all Actions. Base Death Save Penalty is increased by 1.",
+        "Quick Fix": "N/A",
+        "Treatment": "Surgery DV17"
+    },
+    "Damaged Eye": {
+        "Effect": "-2 to Ranged Attacks & Perception Checks involving vision.",
+        "Quick Fix": "Paramedic DV15, Surgery DV13",
+        "Treatment": "Quick Fix removes Injury Effect permanently."
+    },
+    "Concussion": {
+        "Effect": "-2 to all Actions.",
+        "Quick Fix": "First Aid or Paramedic DV13",
+        "Treatment": "Quick Fix removes Injury Effect permanently."
+    },
+    "Broken Jaw": {
+        "Effect": "-4 to all Actions involving speech.",
+        "Quick Fix": "N/A",
+        "Treatment": "Paramedic DV13, Paramedic or Surgery DV13"
+    },
+    "Foreign Object": {
+        "Effect": "At the end of every Turn where you move further than 4m/yds on foot, you re-suffer this Critical Injury's Bonus Damage directly to your Hit Points.",
+        "Quick Fix": "First Aid or Paramedic DV13",
+        "Treatment": "Quick Fix removes Injury Effect permanently."
+    },
+    "Whiplash": {
+        "Effect": "Base Death Save Penalty is increased by 1.",
+        "Quick Fix": "N/A",
+        "Treatment": "Paramedic DV13, Paramedic or Surgery DV13"
+    },
+    "Cracked Skull": {
+        "Effect": "Aimed Shots to your head multiply the damage that gets through your SP by 3 instead of 2. Base Death Save Penalty is increased by 1.",
+        "Quick Fix": "N/A",
+        "Treatment": "Paramedic DV15, Paramedic or Surgery DV15"
+    },
+    "Damaged Ear": {
+        "Effect": "Whenever you move further than 4m/yds on foot in a Turn, you cannot take a Move Action on your next Turn. Additionally you take a -2 to Perception Checks involving hearing.",
+        "Quick Fix": "Paramedic DV13, Surgery DV13 ",
+        "Treatment": "Quick Fix removes Injury Effect permanently."
+    },
+    "Crushed Windpipe": {
+        "Effect": "You cannot speak. Base Death Save Penalty is increased by 1.",
+        "Quick Fix": "N/A",
+        "Treatment": "Surgery DV15"
+    },
+    "Lost Ear": {
+        "Effect": "The Lost Ear is gone. Whenever you move further than 4m/yds on foot in a Turn, you cannot take a Move Action on your next Turn. Additionally you take a -4 to Perception Checks involving hearing. Base Death Save Penalty is increased by 1.",
+        "Quick Fix": "N/A",
+        "Treatment": "Surgery DV17"
+    }
+}
