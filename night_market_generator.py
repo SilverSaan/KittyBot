@@ -65,43 +65,34 @@ gun_dict = {
 	'Weapon Attachments of 100eb or less': 100,
 	'Weapon Attachments of 500eb or higher': 500}
 
+QUALITY_MULTIPLIERS = {
+    0: {50: 20, 100: 50, 500: 100},      # Poor
+    1: {50: 50, 100: 100, 500: 500},     # Average (same)
+    2: {50: 100, 100: 500, 500: 1000}    # Excellent
+}
+
 ###Functions and classes
 
 class Weapon():
 	def __init__(self):
 		self.type = ''
 		self.price = 0
-		self.quality = randrange(10)
-		self.quality_trig = 1
-		if (self.quality < 4):
-			self.quality = 0
-		elif (self.quality > 7):
-			self.quality = 2
+		roll = randrange(10)
+		if roll < 4:
+			self.quality = 0  # Poor
+		elif roll > 7:
+			self.quality = 2  # Excellent
 		else:
-			self.quality = 1
+			self.quality = 1  # Average
+		self.quality_trig = 1
 	
 	def update_gun(self, gun_type, price, trigger_quality):
 		self.type = gun_type
-		if (trigger_quality):
+		if trigger_quality:
 			self.quality_trig = 0
-			return()
-		if (self.quality == 0):
-			if (price == 50):
-				self.price = 20
-			elif (price == 100):
-				self.price = 50
-			else:
-				self.price = 100
-		elif (self.quality == 2):
-			if (price == 50):
-				self.price = 100
-			elif (price == 100):
-				self.price = 500
-			else:
-				self.price = 1000
-		else:
-			self.price = price
-
+			return
+		
+		self.price = QUALITY_MULTIPLIERS.get(self.quality, {}).get(price, price)
 def check_sim(liste, numb):
 	i = len(liste)
 	j = 0
@@ -112,16 +103,11 @@ def check_sim(liste, numb):
 		j = j + 1
 	return (trigger)
 
-def fill_list(liste, n, dice):
-	i = 1
-	liste.append(randrange(dice))
-	while(n > i):
-		j = randrange(dice)
-		while (check_sim(liste, j)):
-			j = randrange(dice)
-		i = i + 1
-		liste.append(j)
-	return(liste)
+def fill_list(n, dice):
+    result = set()
+    while len(result) < n:
+        result.add(randrange(dice))
+    return list(result)
 
 def gun_generator(roll):
 	gun = Weapon()
@@ -134,8 +120,7 @@ def gun_generator(roll):
 def gun_reader(gun_list):
 	string_result = ""
 	for gun in gun_list:
-		print(gun.type, end = '')
-		string_result += f'{gun.type}'
+		string_result += f'- {gun.type}'
 		if (gun.quality_trig):
 			print('(' + quality_list[gun.quality],'Quality), sold at ', end = '')
 			string_result += '(' + f'{quality_list[gun.quality]}' + ' Quality), sold at '
@@ -182,10 +167,9 @@ def main():
 
 	items_number = [randrange(10) + 1, randrange(10) + 1]
 	i = 0
-	first_list = []
-	second_list = []
-	first_list = fill_list(first_list, items_number[0], 20)
-	second_list = fill_list(second_list, items_number[1], 20)
+	
+	first_list = fill_list(items_number[0], 20)
+	second_list = fill_list(items_number[1], 20)
 
 	### Quality of Weapons
 	print_stream = ""
@@ -193,11 +177,9 @@ def main():
 
 	#Print infos
 	reminder = 0
-	print('Welcome, choomba!\nThis Night Market is selling:')
 	print_stream +='Welcome, choomba!\nThis Night Market is selling:\n'
 	for i in market_type_var:
-		print(market_types[i])
-		print_stream+= f'{market_types[i]}\n'
+		print_stream += f'**{market_types[i]}**\n'  # Bold category names
 	if (not(check_guns(market_type_var))):
 		print('\nThere\'s', f'{items_number[0]}', 'items of the first category, and ', f'{items_number[1]}', 'items of the second.')
 		print('\nOn the stand, you can find:\n')
@@ -206,22 +188,17 @@ def main():
 		
 	
 		for i in first_list:
-			print(market_types_lists[market_type_var[0]][i])
-			print_stream += f'{market_types_lists[market_type_var[0]][i]}\n'
+			print_stream += f'- {market_types_lists[market_type_var[0]][i]}\n'
 
 		for i in second_list:
-			print(market_types_lists[market_type_var[1]][i])
-			print_stream += f'{market_types_lists[market_type_var[1]][i]}\n'
+			print_stream += f'- {market_types_lists[market_type_var[1]][i]}\n'
 
 	else:
-		print('\nThere\'s', f'{items_number[0]}', 'items of the first category, and ', f'{items_number[1]}', 'items of the second.')
-		print('\nOn the stand, you can find:\n')
 		print_stream += '\nThere\'s ' + f'{items_number[0]}' + ' items of the first category, and ' + f'{items_number[1]}' + ' items of the second.\n'
 		print_stream += '\nOn the stand, you can find:\n\n'
 		if (market_type_var[0] != 2):
 			for i in first_list:
-				print(market_types_lists[market_type_var[0]][i])
-				print_stream += f'{market_types_lists[market_type_var[0]][i]}\n'
+				print_stream += f'- {market_types_lists[market_type_var[0]][i]}\n'
 
 		else:
 			print_stream += gen_gun_list(first_list)
@@ -229,15 +206,12 @@ def main():
 			
 		if (market_type_var[1] != 2):
 			for i in second_list:
-				print(market_types_lists[market_type_var[1]][i])
-				print_stream += f'{market_types_lists[market_type_var[1]][i]}\n'
+				print_stream += f'- {market_types_lists[market_type_var[1]][i]}\n'
 		else:
 			print_stream += gen_gun_list(second_list)
 			reminder = 1
 
 	if (reminder):
-		print("\n\nA little reminder for you, choom: a Poor Quality weapon jam on a roll of one, and an Excellent \
-Quality weapon gives you +1 on all attack checks.")
 		print_stream += "\n\nA little reminder for you, choom: a Poor Quality weapon jam on a roll of one, and an Excellent \
 Quality weapon gives you +1 on all attack checks.\n"
 	return print_stream
