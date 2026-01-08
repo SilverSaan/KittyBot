@@ -133,8 +133,8 @@ STREETSLANG = {
     "soulkiller": "Deadly ICE program that destroys minds",
     "quickhack": "Fast netrunning attack program",
     "heathen": "Non-religious person, normal person",
-    "Adam Smasher": "Legendary full-borg solo, now more machine than man",
-    "Johnny Silverhand": "Legendary rockerboy, anti-corporate rebel"
+    "adam smasher": "Legendary full-borg solo, now more machine than man",
+    "johnny silverhand": "Legendary rockerboy, anti-corporate rebel"
 }
 
 def lookup_slang(term):
@@ -144,7 +144,8 @@ def lookup_slang(term):
     """
     term_lower = term.lower().strip()
     if term_lower in STREETSLANG:
-        term_to_send = term_lower.capitalize()
+        # Capitalize the term, all words separated by spaces will be capitalized
+        term_to_send = ' '.join(word.capitalize() for word in term_lower.split())
         return f"**{term_to_send}**: {STREETSLANG[term_lower]}"
     return None
 
