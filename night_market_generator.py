@@ -93,6 +93,7 @@ class Weapon():
 			return
 		
 		self.price = QUALITY_MULTIPLIERS.get(self.quality, {}).get(price, price)
+		
 def check_sim(liste, numb):
 	i = len(liste)
 	j = 0
@@ -122,16 +123,12 @@ def gun_reader(gun_list):
 	for gun in gun_list:
 		string_result += f'- {gun.type}'
 		if (gun.quality_trig):
-			print('(' + quality_list[gun.quality],'Quality), sold at ', end = '')
 			string_result += '(' + f'{quality_list[gun.quality]}' + ' Quality), sold at '
 			if (gun.price):
-				print(str(int(gun.price))+'eb')
 				string_result += str(int(gun.price))+'eb\n'
 			else:
-				print('the appropriate price')
 				string_result += 'the appropriate price\n'
 		else:
-			print(' ')
 			string_result += ' \n'
 	return string_result
 
@@ -181,8 +178,6 @@ def main():
 	for i in market_type_var:
 		print_stream += f'**{market_types[i]}**\n'  # Bold category names
 	if (not(check_guns(market_type_var))):
-		print('\nThere\'s', f'{items_number[0]}', 'items of the first category, and ', f'{items_number[1]}', 'items of the second.')
-		print('\nOn the stand, you can find:\n')
 		print_stream += '\nThere\'s ' + f'{items_number[0]}' + ' items of the first category, and ' + f'{items_number[1]}' + ' items of the second.\n'
 		print_stream += '\nOn the stand, you can find:\n\n'
 		
