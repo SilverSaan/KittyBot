@@ -6,6 +6,13 @@ INTERIOR_STANDART = ["Hellhound x2","Hellhound, Killer","Skunk x2","Sabertooth",
 INTERIOR_UNCOMMON = ["Kraken","Hellhound, Scorpion","Hellhound, Killer","Raven x2","Sabertooth","Hellhound","Password DV10","File DV10","Control Node DV10","Password DV10","Killer","Liche","Dragon","Asp, Raven","Dragon, Wisp","Giant"]
 INTERIOR_ADVANCED = ["Hellhound x3","Asp x2","Hellhound, Liche","Wisp x3","Hellhound, Sabertooth","Kraken","Password DV12","File DV12","Control Node DV12","Password DV12","Giant","Dragon","Killer, Scorpion","Kraken","Raven, Wisp, Hellhound","Dragon x2"]
 
+DIFFICULTY_INFO = {
+    1: "Basic (DV6) | Normal interface level 2",
+    2: "Standard (DV8) | Normal interface level 4 | Deadly: 2",
+    3: "Uncommon (DV10) | Normal interface level 6 | Deadly: 4",
+    4: "Advanced (DV12) | Normal interface level 8 | Deadly: 6"
+}
+
 class Floor:
     def __init__(self,level):
         self.level = level
@@ -242,7 +249,19 @@ def getDificulty():
         return getDificulty()
     return dificulty
 
-def printLegendRecursive(floor,difficulty):
+def printLegend(floors, difficulty):
+    output = "**Legend:**\n"  # Add markdown header
+    floor = floors[0]	
+    output += f"**{floor.id}:** {INTERIOR_LOBBY[floor.occupancy-1]}\n"
+    
+    floor = floor.childs[0]	
+    output += f"**{floor.id}:** {INTERIOR_LOBBY[floor.occupancy-1]}\n"
+    
+    for child in floor.childs:
+        output += printLegendRecursive(child, difficulty)
+    return output
+
+def printLegendRecursive(floor, difficulty):
     output = ""
     if difficulty == 1:
         occupancy = INTERIOR_BASIC[floor.occupancy-3]
@@ -252,25 +271,11 @@ def printLegendRecursive(floor,difficulty):
         occupancy = INTERIOR_UNCOMMON[floor.occupancy-3]
     elif difficulty == 4:
         occupancy = INTERIOR_ADVANCED[floor.occupancy-3]
-    output += f"{floor.id}: {occupancy}\n"
-    print (f"{floor.id}: {occupancy}")
-    for child in floor.childs:
-        output += printLegendRecursive(child,difficulty)
-    return output
-
-def printLegend(floors, difficulty):
-    output = ""
-    print ("Legend:")
-    floor = floors[0]	
-    output += f"{floor.id}: {INTERIOR_LOBBY[floor.occupancy-1]}\n"
-    print (f"{floor.id}: {INTERIOR_LOBBY[floor.occupancy-1]}")
     
-    floor = floor.childs[0]	
+    output += f"**{floor.id}:** {occupancy}\n"
     
-    output += f"{floor.id}: {INTERIOR_LOBBY[floor.occupancy-1]}\n"
-    print (f"{floor.id}: {INTERIOR_LOBBY[floor.occupancy-1]}")
     for child in floor.childs:
-        output += printLegendRecursive(child,difficulty)
+        output += printLegendRecursive(child, difficulty)
     return output
 
 
