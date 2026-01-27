@@ -6,7 +6,7 @@ from Tree import Calc
 calculate = Calc.evaluate
 
 def rand(value):
-        return randint(1, value)
+    return randint(1, value)
 
 def roll_dice(dice_string: str) -> tuple:
     # Parse the input string to get the number of dice and the number of sides on each dice
@@ -50,12 +50,6 @@ def rollAll(expression):
         rolling.append(rolls)
     return rolling, total
 
-def sumOfArray(array): 
-    total = 0
-    for i in range(0, len(array)):
-        total += array[i]
-    return total
-
 def initialScoreRoll(): 
     rolls = []
     new = []
@@ -71,7 +65,7 @@ def initialScoreRoll():
         new.sort()
         removed = new.pop(0)
         removed_list.append(removed)
-        total.append(sumOfArray(new))
+        total.append(sum(new))
         rolls.append(new)
     
     #Now format the String
@@ -79,13 +73,23 @@ def initialScoreRoll():
 
     return end_expr
 
-def process_args(expr):
-    #Recebe uma lista de argumentos que serão rolls de dados como xDn 
-    print("Something")
-    
+
 def format_roll(expr):
     rolls = re.split(r'([+\-*\/])', expr)
     results_string = ""
+    message_to_user = expr + ": "
+
+    if(">" in expr) or "<" in expr:
+        try:
+
+            number_of_sucesses, objective, values = roll_for_sucesses(expr)
+            print(number_of_sucesses, objective)
+            message_to_user += f"{values} : {number_of_sucesses} success at difficulty {objective}"
+            return number_of_sucesses, message_to_user.strip()
+        except Exception as e: 
+            print(e)
+            return -1, -1
+
     message_to_user = expr + " = "
     for part in rolls:
         if part.strip():
@@ -105,4 +109,40 @@ def format_roll(expr):
     
     return results_string.strip(), message_to_user.strip()
 
+def roll_for_sucesses(expr):
+    #Instead of rolling searching for a sum it receives a expression such as "xdN > Y" (Or opposite xdN < Y)
+    #Any other symbol such as +-*/ is invalid
+
+    print(expr)
+    invalid = ["+","-","*","/"]
+    if any(c in expr for c in invalid): 
+        raise "Error, can only process commands such as 8d10 > 6"
+
+    rolls = getRolls(expr)
+    comparison = re.search(r"([<>])\s*(\d+)\s*$", expr)
+    sign = comparison.group(1)
+    print(sign)
+    number = comparison.group(2)
+    print(number)
+
+    num_successes = 0
+    values = []
+    for dice_roll in rolls: 
+        rolls, sum_roll = roll_dice(dice_roll)
+
+        if sign == ">": 
+            for roll_n in rolls:
+                values.append(roll_n)
+                num_successes += boolean_c_style(roll_n >= int(number))
+        elif sign == "<": 
+            for roll_n in rolls:
+                values.append(roll_n)
+                num_successes += boolean_c_style(roll_n <= int(number))
+        else:
+            raise "Error"
+    return num_successes, int(number), values
+
+        
+def boolean_c_style(Bool):
+    return 1 if Bool else 0
 

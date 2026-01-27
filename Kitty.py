@@ -99,6 +99,8 @@ async def red(ctx, *, message):
   except Exception as e:
     await ctx.send(f"Error - {e}")
     
+
+
 @bot.hybrid_command()
 async def crithead(ctx):
   response =  get_head_injury()

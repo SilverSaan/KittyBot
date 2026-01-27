@@ -17,7 +17,7 @@ class NetInterface(discord.ui.View):
         super().__init__(timeout=timeout)
         self.difficulty = None
         self.floors = None
-        self.show_visual = True  # Default to visual diagram
+        self.show_visual = False  # Default to visual diagram
     
     async def generate_and_send(self, interaction, difficulty):
         """Common method to generate and send architecture"""
