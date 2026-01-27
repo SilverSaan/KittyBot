@@ -58,7 +58,7 @@ tree = app_commands.CommandTree(client)
 @bot.hybrid_command()
 async def hello(ctx):
   await ctx.send('Hello, my name is Kitty, Exotic from Biotechnica\'s Zoo and your resident Cyberpunk (Being cute doesn\'t pay rent) catgirl ≽^•⩊•^≼\n\n\
-I can roll dice for you, and also generate some useful things (More to come btw), like Night Markets, NPC Ideas... aaaand that\'s it \*ฅ^•ﻌ•^ฅ*\n\
+I can roll dice for you, and also generate some useful things (More to come btw), like Night Markets, NPC Ideas... aaaand that\'s it *ฅ^•ﻌ•^ฅ*\n\
 If you want DnD utilities try to convince my creator @silversaan to develop my father (The Innkeeper / Tavern Bot)')
 
 @bot.hybrid_command()

@@ -30,7 +30,7 @@ def roll_dice(dice_string: str) -> tuple:
 
 
 def getRolls(expression):
-    x = re.split('[+]|[*]|[-]|[/]|\s', expression)
+    x = re.split('[+]|[*]|[-]|[/]|\s', expression) # Ignore this Syntax Warning \s is not a escape here
     rolls = []
     finder = re.compile('[1-9]*[0-9]*(d|D)[1-9][0-9]*')
     for i in range(0, len(x)):
@@ -88,7 +88,7 @@ def format_roll(expr):
             return number_of_sucesses, message_to_user.strip()
         except Exception as e: 
             print(e)
-            return -1, -1
+            raise e
 
     message_to_user = expr + " = "
     for part in rolls:
@@ -116,7 +116,7 @@ def roll_for_sucesses(expr):
     print(expr)
     invalid = ["+","-","*","/"]
     if any(c in expr for c in invalid): 
-        raise "Error, can only process commands such as 8d10 > 6"
+        raise Exception("Can only process commands such as 8d10 > 6")
 
     rolls = getRolls(expr)
     comparison = re.search(r"([<>])\s*(\d+)\s*$", expr)
