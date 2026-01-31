@@ -11,17 +11,6 @@ def format_skills(i_class:dict):
     return result
 
 def format_stats(stats): 
-    stats_s = "\n"
-    stats_s += f"INT: {stats['int']}\n"    
-    stats_s += f"REF: {stats['ref']}\n"    
-    stats_s += f"DEX: {stats['dex']}\n"    
-    stats_s += f"TECH: {stats['tech']}\n"    
-    stats_s += f"COOL: {stats['cool']}\n"    
-    stats_s += f"WILL: {stats['will']}\n"    
-    stats_s += f"LUCK: {stats['luck']}\n"    
-    stats_s += f"MOVE: {stats['move']}\n"    
-    stats_s += f"BODY: {stats['body']}\n"    
-    stats_s += f"EMP: {stats['emp']}\n" 
     
     stats_t = f"""
 ```
