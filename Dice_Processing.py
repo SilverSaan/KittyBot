@@ -73,43 +73,7 @@ def initialScoreRoll():
 
     return end_expr
 
-
-def format_roll(expr):
-    rolls = re.split(r'([+\-*\/])', expr)
-    results_string = ""
-    message_to_user = expr + ": "
-
-    if(">" in expr) or "<" in expr:
-        try:
-
-            number_of_sucesses, objective, values = roll_for_sucesses(expr)
-            print(number_of_sucesses, objective)
-            message_to_user += f"{values} : {number_of_sucesses} success at difficulty {objective}"
-            return number_of_sucesses, message_to_user.strip()
-        except Exception as e: 
-            print(e)
-            raise e
-
-    message_to_user = expr + " = "
-    for part in rolls:
-        if part.strip():
-            if part.isdigit():  # If it's a constant number
-                results_string += f"{part} "
-                message_to_user += f"{part} "
-            elif 'd' in part or 'D' in part:  # If it's a dice roll
-                roll_results, _ = roll_dice(part)
-                results_string += f"({' + '.join(map(str, roll_results))}) "
-                message_to_user += f"{part}({' '.join(map(str, roll_results))}) "           
-            else:  # If it's an operator
-                results_string += part + " "
-                message_to_user += part + " "
-
-    result = calculate(results_string.strip())
-    message_to_user += f"= :star: {result} :star:"
-    
-    return results_string.strip(), message_to_user.strip()
-
-def roll_for_sucesses(expr):
+def roll_for_successes(expr):
     #Instead of rolling searching for a sum it receives a expression such as "xdN > Y" (Or opposite xdN < Y)
     #Any other symbol such as +-*/ is invalid
 
@@ -141,6 +105,75 @@ def roll_for_sucesses(expr):
         else:
             raise "Error"
     return num_successes, int(number), values
+
+
+def format_roll(expr):
+    print(expr)
+    # Check for success-based rolls
+    if ">" in expr or "<" in expr:
+        print("Success Dice? ", expr)
+
+        number_of_successes, objective, values = roll_for_successes(expr)
+        message = f"{values} : {number_of_successes} success at difficulty {objective}"
+        return number_of_successes, message
+
+    # Check if it's multiple dice rolls without operators
+    if is_multiple_dice(expr):
+        print("Multiple Dice? ", expr)
+        message = roll_multiple_dice(expr)
+        return None, message
+
+    # Otherwise, treat as arithmetic expression
+    print("Expression Dice? ", expr)
+
+    result, message = roll_expression(expr)
+    return result, message
+
+
+def is_multiple_dice(expr):
+    # If there are any arithmetic operators, treat as expression
+    if any(op in expr for op in '+-*/'):
+        return False
+        
+    rolls = expr.split()
+    return all('d' in part.lower() for part in rolls)
+
+
+
+def roll_multiple_dice(expr):
+    rolls = expr.split()
+    results = []
+    for part in rolls:
+        roll_results, _ = roll_dice(part)
+        print(roll_results)
+        results.append(f"{part}({' '.join(map(str, roll_results))}) = {sum(roll_results)}")
+    return " |\n ".join(results)
+
+
+def roll_expression(expr):
+    rolls = re.split(r'([+\-*\/])', expr)
+    results_string = ""
+    message = expr + " = "
+
+    for part in rolls:
+        if not part.strip():
+            continue
+        if part.isdigit():
+            results_string += f"{part} "
+            message += f"{part} "
+        elif 'd' in part.lower():
+            roll_results, _ = roll_dice(part)
+            results_string += f"({' + '.join(map(str, roll_results))}) "
+            message += f"{part}({' '.join(map(str, roll_results))}) [{sum(roll_results)}]"
+        else:
+            results_string += part + " "
+            message += part + " "
+
+    total = calculate(results_string.strip())
+    message += f"= :star: {total} :star:"
+    return total, message
+
+
 
         
 def boolean_c_style(Bool):

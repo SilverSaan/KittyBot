@@ -1,6 +1,7 @@
 from discord.ext import commands
 import Dice_Processing as die
 from red_die import red as red_roll, get_head_injury, get_body_injury
+import random
 
 class DiceCommands(commands.Cog):
     def __init__(self, bot):
@@ -9,9 +10,9 @@ class DiceCommands(commands.Cog):
     @commands.hybrid_command()
     async def roll(self, ctx, *, message):
         try:
-            message = message.replace(' ', '')
+
             _, response = die.format_roll(message)
-            await ctx.send(f'**{ctx.author.mention} rolled: ' + response + '**')
+            await ctx.send(f'**{ctx.author.mention} rolled: \n' + response + '**')
         except Exception as e:
             await ctx.send(f"Error - {e}")
     
@@ -26,7 +27,7 @@ class DiceCommands(commands.Cog):
                 string_response += crit_message
             await ctx.send(string_response)
         except Exception as e:
-            await ctx.send(f"Error - {e}")
+            await ctx.send("Invalid roll format.")
     
     @commands.hybrid_command()
     async def crithead(self, ctx):
@@ -38,26 +39,29 @@ class DiceCommands(commands.Cog):
         response = get_body_injury()
         await ctx.send(response)
 
+ 
     @commands.hybrid_command()
-    async def dchance(self,ctx,chance): 
+    async def dchance(self, ctx, chance):
         try:
-            ch = None
-            if(float(chance) < 1 and float(chance) > 0 ):
-                ch = int(float(chance) * 100)
-                await ctx.send(f"Assuming you meant {int(float(chance) * 10)}%")
-            elif(int(chance) <= 100 and int(chance) >= 1):
-                ch = int(float(chance))
+            f = float(chance)
+            if 0 < f < 1:
+                ch = int(f * 100)
+                await ctx.send(f"Assuming you meant {ch}%")
+            elif 1 <= f <= 100:
+                ch = int(f)
             else:
-                await ctx.send(f'{ctx.author.mention} please input a number between 1 and 100 choom')
+                await ctx.send(f"{ctx.author.mention} please input a number between 1 and 100")
+                return
 
-            if(ch): 
-                roll, value = die.roll_dice("1d100")
-            if value <= ch: 
-                await ctx.send(f'{ctx.author.mention} **Success!** Rolled a {value} on the chance of {ch}%! **You got it choom!**')
-            if value > ch: 
-                await ctx.send(f'{ctx.author.mention} **Failed!** Rolled a {value} on the chance of {ch}%! Did you forget your LUCK points?! ')
-        except Exception as e:
-            await ctx.send(f'{ctx.author.mention} please input a number between 1 and 100 choom')
+            value = random.randint(1, 100)
+
+            if value <= ch:
+                await ctx.send(f"{ctx.author.mention} **Success!** Rolled {value} on the chance of {ch}%!")
+            else:
+                await ctx.send(f"{ctx.author.mention} **Failed!** Rolled {value} on the chance of {ch}%!")
+
+        except ValueError:
+            await ctx.send(f"{ctx.author.mention} please input a valid number")
 
     @commands.hybrid_command()
     async def iscore(self, ctx):

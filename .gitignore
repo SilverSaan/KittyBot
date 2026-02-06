@@ -1,7 +1,7 @@
 #Ignore Jsons (All of them contain sensitive information)
 token.json
 jsons/moons/
-#Seriously fucked up
+
 __pycache__ 
 
 Shortcuts

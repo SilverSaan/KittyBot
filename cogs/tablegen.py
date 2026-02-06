@@ -70,15 +70,15 @@ class TableGenerator(commands.Cog):
                 chunk_size = 20
                 chunks = [all_terms[i:i + chunk_size] for i in range(0, len(all_terms), chunk_size)]
                 
-            try:
-                await ctx.author.send("**Complete Streetslang Dictionary**\n\n")
-                for i, chunk in enumerate(chunks):
-                    message = "\n".join(chunk)
-                    await ctx.author.send(message)
-                    
-                    await ctx.send(f"{ctx.author.mention} Check your DMs for the complete streetslang dictionary, choom! ≽^•⩊•^≼")
-            except discord.Forbidden:
-                await ctx.send("I couldn't DM you the list, choom. Make sure your DMs are open!")
+                try:
+                    await ctx.author.send("**Complete Streetslang Dictionary**\n\n")
+                    for i, chunk in enumerate(chunks):
+                        message = "\n".join(chunk)
+                        await ctx.author.send(message)
+                        
+                        await ctx.send(f"{ctx.author.mention} Check your DMs for the complete streetslang dictionary, choom! ≽^•⩊•^≼")
+                except discord.Forbidden:
+                    await ctx.send("I couldn't DM you the list, choom. Make sure your DMs are open!")
                 
             else:
                 # Look up specific term
