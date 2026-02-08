@@ -1,3 +1,4 @@
+import re
 from discord.ext import commands
 import Dice_Processing as die
 from red_die import red as red_roll, get_head_injury, get_body_injury
@@ -10,7 +11,6 @@ class DiceCommands(commands.Cog):
     @commands.hybrid_command()
     async def roll(self, ctx, *, message):
         try:
-
             _, response = die.format_roll(message)
             await ctx.send(f'**{ctx.author.mention} rolled: \n' + response + '**')
         except Exception as e:
@@ -68,6 +68,27 @@ class DiceCommands(commands.Cog):
         """Generates Initial DND Scores"""
         await ctx.send("I'm not supposed to be used for DnD but here's your Initial Scores for it choom. /ᐠ - ⩊ -マ Ⳋ\n" +
             die.initialScoreRoll())  
+        
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if message.author.bot:
+            return
+
+        expr = message.content.strip()
+
+        if not die.DICE_EXPR_FULL.match(expr):
+            return
+
+        try:
+            result, response = die.format_roll(expr)
+            print(result)
+            await message.channel.send(
+                f"**{message.author.mention} rolled:**\n{response}"
+            )
+        except Exception:
+            return
+
+
 
 
 async def setup(bot):
