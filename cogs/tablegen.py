@@ -27,6 +27,8 @@ class TableGenerator(commands.Cog):
     @commands.hybrid_command(name="streetslang", description="Look up Cyberpunk streetslang terms")
     async def streetslang(self, ctx, *, term: str = None):
         try:
+            result = None  # initialize result to avoid scope issues
+
             if term is None:
                 # No argument, show help
                 help_text = (
@@ -46,7 +48,7 @@ class TableGenerator(commands.Cog):
                 await ctx.send(f"Random Streetslang:\n{result}")
             
             elif term.lower().startswith("search "):
-            # Search for terms
+                # Search for terms
                 query = term[7:].strip()
                 if not query:
                     await ctx.send("Please provide a search term. Usage: `/streetslang search [query]`")
@@ -54,19 +56,16 @@ class TableGenerator(commands.Cog):
                     
                 matches = slang.search_slang(query)
                 if matches:
-                    # Limit to first 10 results to avoid spam
                     result_text = "\n".join(matches[:10])
                     if len(matches) > 10:
                         result_text += f"\n\n*...and {len(matches) - 10} more results. Try a more specific search.*"
                     await ctx.send(f"Search results for '{query}':\n{result_text}")
                 else:
                     await ctx.send(f"No streetslang terms found matching '{query}', choom.")
-                    
+            
             elif term.lower() == "list":
                 # Send full list via DM
                 all_terms = slang.list_all_slang()
-                
-                # Split into chunks to avoid Discord's message length limit
                 chunk_size = 20
                 chunks = [all_terms[i:i + chunk_size] for i in range(0, len(all_terms), chunk_size)]
                 
@@ -75,19 +74,17 @@ class TableGenerator(commands.Cog):
                     for i, chunk in enumerate(chunks):
                         message = "\n".join(chunk)
                         await ctx.author.send(message)
-                        
-                        await ctx.send(f"{ctx.author.mention} Check your DMs for the complete streetslang dictionary, choom! ≽^•⩊•^≼")
+                    await ctx.send(f"{ctx.author.mention} Check your DMs for the complete streetslang dictionary, choom! ≽^•⩊•^≼")
                 except discord.Forbidden:
                     await ctx.send("I couldn't DM you the list, choom. Make sure your DMs are open!")
-                
+            
             else:
                 # Look up specific term
                 result = slang.lookup_slang(term)
-            if result:
-                await ctx.send(result)
-            else:
-                await ctx.send(f"Sorry choom, '{term}' isn't in my streetslang dictionary. Try `/streetslang search {term}` to find similar terms.")
-                
+                if result:
+                    await ctx.send(result)
+                else:
+                    await ctx.send(f"Sorry choom, '{term}' isn't in my streetslang dictionary. Try `/streetslang search {term}` to find similar terms.")      
         except Exception as e:
             await ctx.send(f"Error processing streetslang command: {e}")
 

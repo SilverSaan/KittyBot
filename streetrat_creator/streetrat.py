@@ -21,9 +21,6 @@ class RoleSelectView(discord.ui.View):
         self.stat_tables = stat_tables
         self.skills = skills
 
-    
-    
-    
     async def remove_view(self, interaction):
         await interaction.message.edit(view=None)
 
