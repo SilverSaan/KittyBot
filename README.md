@@ -14,11 +14,12 @@ Roll dice directly within Discord using simple commands:
 - `/roll ndx`: *x* and *n* must be numbers. This command rolls any dice.
 
 ## Reference Lookup (TODO)
-Ever had doubts on how to speak streetslang? the comand `/streetslang` can be used to know what a streetslang means
-`/streetslang search choom` - Searches for streetslang that has choom in key or description
-`/streetslang choom` - Searches for the meaning of choom
-`/streetslang list` - Sends list of slang via DM (This one may fail because list is too extensive, too bad)
-`/streetslang random` - Get a random term\n
+Ever had doubts on how to speak streetslang? the comand `/streetslang` can be used to know what a streetslang means:
+
+- `/streetslang search choom` - Searches for streetslang that has choom in key or description
+- `/streetslang choom` - Searches for the meaning of choom
+- `/streetslang list` - Sends list of slang via DM (This one may fail because list is too extensive, too bad)
+- `/streetslang random` - Get a random term
 
 
 
