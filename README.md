@@ -14,7 +14,14 @@ Roll dice directly within Discord using simple commands:
 - `/roll ndx`: *x* and *n* must be numbers. This command rolls any dice.
 
 ## Reference Lookup (TODO)
-Access rules, lore, and other game information quickly and easily.
+Ever had doubts on how to speak streetslang? the comand `/streetslang` can be used to know what a streetslang means
+`/streetslang search choom` - Searches for streetslang that has choom in key or description
+`/streetslang choom` - Searches for the meaning of choom
+`/streetslang list` - Sends list of slang via DM (This one may fail because list is too extensive, too bad)
+`/streetslang random` - Get a random term\n
+
+
+
 
 ## Random Generators 
 Generate random NPCs, locations, items, night markets and more to spark creativity and add depth to your game.
@@ -30,3 +37,4 @@ If you encounter any issues, have suggestions for improvements, or just want to 
 
 
 **_Cyberpunk Red is a trademark of R. Talsorian Games. KittyBot is not affiliated with or endorsed by R. Talsorian Games._**
+
