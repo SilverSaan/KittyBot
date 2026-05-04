@@ -73,6 +73,44 @@ async def hello(ctx):
 I can roll dice for you, and also generate some useful things (More to come btw), like Night Markets, NPC Ideas... aaaand that\'s it *ฅ^•ﻌ•^ฅ*\n\
 If you want DnD utilities try to convince my creator @silversaan to develop my father (The Innkeeper / Tavern Bot)')
 
+@bot.hybrid_command(description="Shows all available commands with descriptions")
+async def help(ctx):
+    embed = discord.Embed(title="KittyBot Help ≽^•⩊•^≼", description="Here's a list of all my commands. Use slash commands for best experience!", color=0x00ff00)
+    
+    # Dice Commands
+    embed.add_field(name="🎲 Dice Commands", value=
+        "**/roll <expr>** - Rolls any dice expression (e.g., 2d6+3)\n"
+        "**/red <expr>** - Rolls Cyberpunk Red style dice (d10s with crits)\n"
+        "**/crithead** - Generates a head critical injury\n"
+        "**/critbody** - Generates a body critical injury\n"
+        "**/dchance <percent>** - Rolls a chance check (1-100)\n"
+        "**/iscore** - Generates D&D-style ability scores", inline=False)
+    
+    # Generator Commands
+    embed.add_field(name="🏙️ Generators", value=
+        "**/generate_name <type>** - Generates a random name (fem/male)\n"
+        "**/streetslang <term>** - Look up streetslang terms\n"
+        "**/nightmarket** - Generates a Night Market\n"
+        "**/streetrat** - Interactive Streetrat character creation\n"
+        "**/netgen** - Net architecture generation", inline=False)
+    
+    # Utility Commands
+    embed.add_field(name="🛠️ Utilities", value=
+        "**/lunar_phase <date>** - Gets lunar phase for a date\n"
+        "**/hello** - Intro message", inline=False)
+    
+    # Admin Commands (only show if owner)
+    if ctx.author.id == tokens['owner_token']:
+        embed.add_field(name="👑 Owner Commands", value=
+            "**/sync** - Syncs slash commands\n"
+            "**/shutdown** - Shuts down the bot\n"
+            "**/notify_dm <role> <message>** - DMs all members of a role", inline=False)
+    
+    embed.set_footer(text="For more details, use the command directly!")
+    await ctx.author.send(embed=embed)
+    if ctx.interaction is None:  # If text command, confirm
+        await ctx.send("Check your DMs for the help menu, choom! ≽^•⩊•^≼")
+
 @bot.tree.command(name='sync', description='Owner only')
 async def sync(interaction: discord.Interaction):
     if interaction.user.id == tokens['owner_token']:
@@ -129,9 +167,6 @@ async def notify_dm_error(ctx, error):
   if isinstance(error, commands.MissingPermissions):
     await ctx.send("You must be an administrator to use this command.", ephemeral=True)
 
-@bot.event
-async def on_ready():
-   print("Bot is ready and online")
 
 
 

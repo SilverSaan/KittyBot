@@ -1,6 +1,5 @@
 from random import randint
 import re
-import numpy as np
 import random
 from Tree import Calc
 calculate = Calc.evaluate
