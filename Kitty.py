@@ -73,6 +73,8 @@ async def hello(ctx):
 I can roll dice for you, and also generate some useful things (More to come btw), like Night Markets, NPC Ideas... aaaand that\'s it *ฅ^•ﻌ•^ฅ*\n\
 If you want DnD utilities try to convince my creator @silversaan to develop my father (The Innkeeper / Tavern Bot)')
 
+bot.remove_command('help')
+
 @bot.hybrid_command(description="Shows all available commands with descriptions")
 async def help(ctx):
     embed = discord.Embed(title="KittyBot Help ≽^•⩊•^≼", description="Here's a list of all my commands. Use slash commands for best experience!", color=0x00ff00)
