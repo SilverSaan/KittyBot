@@ -8,23 +8,32 @@ from websockets.exceptions import ConnectionClosed
 async def send_bot_status(bot_name, auth_token, bot, bot_status="online"):
     uri = f"ws://localhost:3001/ws?auth_key={auth_token}"
     
-    while True:  # Outer loop for reconnection
+    guilds_data = [
+        {"id": str(guild.id), "name": guild.name} 
+        for guild in bot.guilds
+    ]
+
+    while True:
         try:
             print(f"🔌 Attempting to connect to {uri}...")
             async with websockets.connect(uri) as websocket:
                 print("✅ Connected to server.")
 
-                async def send_status():
-                    """Send bot status updates every 5 seconds."""
+                # Send identify once on connect
+                await websocket.send(json.dumps({
+                    "type": "identify",
+                    "name": bot_name,
+                    "guilds": guilds_data
+                }))
+
+                await setup_guild_events(bot, websocket, auth_token)
+
+                async def send_ping():
+                    """Send heartbeat ping every 20 seconds."""
                     while True:
-                        status_data = {
-                            "auth_key": auth_token,
-                            "bot_status": bot_status,
-                            "name": bot_name, 
-                        }
-                        await websocket.send(json.dumps(status_data))
-                        print(f"🔄 Sent status update: {status_data}")
-                        await asyncio.sleep(15)
+                        await websocket.send(json.dumps({ "type": "ping" }))
+                        print("🏓 Ping sent")
+                        await asyncio.sleep(20)
 
                 async def receive_messages():
                     """Listen for messages from the server."""
@@ -34,35 +43,24 @@ async def send_bot_status(bot_name, auth_token, bot, bot_status="online"):
 
                         if response_data.get("shutdown") == auth_token:
                             print("🛑 Shutdown signal received! Cleaning up...")
-                            offline_status = {
-                                "auth_key": auth_token,
-                                "bot_status": "offline",
-                                "name": bot_name, 
-                            }
-                            # Use a try/except here too in case the socket dies 
-                            # exactly as we try to send the final "offline" msg
                             try:
-                                await websocket.send(json.dumps(offline_status))
+                                await websocket.send(json.dumps({ "type": "offline" }))
                                 await websocket.close()
                             except:
                                 pass
                             
                             await bot.close()
-                            return "SHUTDOWN" # Signal to break the outer loop
+                            return "SHUTDOWN"
 
-                # gather(return_exceptions=False) means if one fails, gather raises it immediately
-                # This is good because it triggers our outer 'except' block to reconnect
                 done, pending = await asyncio.wait(
-                    [asyncio.create_task(send_status()), 
+                    [asyncio.create_task(send_ping()), 
                      asyncio.create_task(receive_messages())],
                     return_when=asyncio.FIRST_COMPLETED
                 )
 
-                # Clean up pending tasks
                 for task in pending:
                     task.cancel()
 
-                # Check if we exited because of a shutdown command
                 for task in done:
                     if task.result() == "SHUTDOWN":
                         return 
@@ -82,3 +80,21 @@ async def run_task(bot_name, auth_token, bot):
 def start_ws_run(bot_name, auth_token):
     asyncio.get_event_loop().run_until_complete(send_bot_status(bot_name, auth_token))
 
+async def setup_guild_events(bot, websocket, auth_token):
+    
+    @bot.event
+    async def on_guild_join(guild):
+        await websocket.send(json.dumps({
+            "type": "guild_joined",
+            "id": str(guild.id),
+            "name": guild.name
+        }))
+        print(f"📥 Joined guild: {guild.name}")
+
+    @bot.event
+    async def on_guild_remove(guild):
+        await websocket.send(json.dumps({
+            "type": "guild_left",
+            "id": str(guild.id),
+        }))
+        print(f"📤 Left guild: {guild.name}")

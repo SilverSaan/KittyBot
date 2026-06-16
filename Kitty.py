@@ -227,10 +227,17 @@ async def on_ready():
     if options['backend']:
       await connect_backend()
 
+    setup_guild_events(bot, )
+
+
+
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-nobe", "--no_backend", help="Ignores Connection to the Backend for telemetry and reduces noise on debug", action=argparse.BooleanOptionalAction)
 parser.add_argument("-v", "--verbose", help="Debug will show every error, including ignored ones", action=argparse.BooleanOptionalAction)
+
+
 
 
 

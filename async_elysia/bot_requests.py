@@ -6,7 +6,8 @@ def register(auth_key, discord_id, owner_id):
     payload = {
         "auth_key": auth_key,
         "bot_discord_id": discord_id,
-        "owner_id": owner_id
+        "owner_id": owner_id,
+        "name": "Kitty.py"
     }
     headers = {"Content-Type": "application/json"}
 
