@@ -227,7 +227,6 @@ async def on_ready():
     if options['backend']:
       await connect_backend()
 
-    setup_guild_events(bot, )
 
 
 
