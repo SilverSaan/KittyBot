@@ -205,7 +205,7 @@ async def on_command_error(ctx: commands.Context, error):
 #GET SELF FROM BACKEND
 async def connect_backend():
   print("Yo")
-  import KittyBot.async_elysia.http_helper as back_end
+  import async_elysia.http_helper as back_end
   from async_elysia.el_socket import send_bot_status, run_task
   bot_name = BOT_NAME
   auth_token = AUTH_TOKEN
