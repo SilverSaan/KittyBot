@@ -5,3 +5,4 @@ jsons/moons/
 __pycache__ 
 
 Shortcuts
+.env

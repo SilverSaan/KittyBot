@@ -5,7 +5,7 @@ from discord.ext.commands import Bot
 from websockets.exceptions import ConnectionClosed
 
 
-async def send_bot_status(bot_name, auth_token, bot, bot_status="online"):
+async def send_bot_status(bot_name, auth_token, bot: Bot, bot_status="online"):
     uri = f"ws://localhost:3001/ws?auth_key={auth_token}"
     
     guilds_data = [
@@ -23,6 +23,7 @@ async def send_bot_status(bot_name, auth_token, bot, bot_status="online"):
                 await websocket.send(json.dumps({
                     "type": "identify",
                     "name": bot_name,
+                    "discord_id": str(bot.user.id),
                     "guilds": guilds_data
                 }))
 
@@ -76,9 +77,6 @@ async def run_task(bot_name, auth_token, bot):
     # Use create_task so it runs in the background of your main Discord bot
     asyncio.create_task(send_bot_status(bot_name, auth_token, bot))
 
-
-def start_ws_run(bot_name, auth_token):
-    asyncio.get_event_loop().run_until_complete(send_bot_status(bot_name, auth_token))
 
 async def setup_guild_events(bot, websocket, auth_token):
     

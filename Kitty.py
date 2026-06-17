@@ -11,15 +11,20 @@ import traceback
 import sys
 import argparse
 
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
 #Create token.json like {"discord_token": randToken, "owner_token": Owner Discord ID}
-def get_tokens():
-  with open('token.json') as f:
-    return(json.load(f))
+#def get_tokens():
+#  with open('token.json') as f:
+#    return(json.load(f))
   
-tokens = get_tokens()
-DISCORD_TOKEN = tokens['discord_token']
-AUTH_TOKEN = tokens['auth_key']
-BOT_NAME = tokens['bot_name']
+
+DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
+AUTH_TOKEN = os.getenv("AUTH_KEY")
+BOT_NAME = os.getenv("BOT_NAME")
 
 options = {
     "backend" : True, 
@@ -102,7 +107,7 @@ async def help(ctx):
         "**/hello** - Intro message", inline=False)
     
     # Admin Commands (only show if owner)
-    if ctx.author.id == tokens['owner_token']:
+    if ctx.author.id == os.getenv("OWNER_TOKEN"):
         embed.add_field(name="👑 Owner Commands", value=
             "**/sync** - Syncs slash commands\n"
             "**/shutdown** - Shuts down the bot\n"
@@ -115,7 +120,7 @@ async def help(ctx):
 
 @bot.tree.command(name='sync', description='Owner only')
 async def sync(interaction: discord.Interaction):
-    if interaction.user.id == tokens['owner_token']:
+    if interaction.user.id == os.getenv("OWNER_TOKEN"):
         await bot.tree.sync(guild=None)
         await bot.tree.sync(guild=interaction.guild)
         await interaction.response.send_message('Command tree synced.')
@@ -126,7 +131,7 @@ async def sync(interaction: discord.Interaction):
 @bot.command()
 async def sync(ctx):
     print("sync command")
-    if ctx.author.id == tokens['owner_token']:
+    if ctx.author.id == os.getenv("OWNER_TOKEN"):
         await bot.tree.sync()
         await ctx.send('Command tree synced.')
     else:
@@ -134,7 +139,7 @@ async def sync(ctx):
 
 @bot.command()
 async def shutdown(ctx):
-    if ctx.author.id == tokens['owner_token']:
+    if ctx.author.id == os.getenv("OWNER_TOKEN"):
         await ctx.send('Shutting down... Bye bye!')
         await bot.close()
     else:
@@ -200,12 +205,12 @@ async def on_command_error(ctx: commands.Context, error):
 #GET SELF FROM BACKEND
 async def connect_backend():
   print("Yo")
-  import async_elysia.bot_requests as back_end
+  import KittyBot.async_elysia.http_helper as back_end
   from async_elysia.el_socket import send_bot_status, run_task
   bot_name = BOT_NAME
   auth_token = AUTH_TOKEN
 
-  status = back_end.get_self(auth_token)  # True if registration successful, False otherwise
+  status = await back_end.get_self(auth_token)  # True if registration successful, False otherwise
 
   if status:
       await run_task(bot_name, auth_token, bot) #Sends periodic status updates to the backend
@@ -227,7 +232,6 @@ async def on_ready():
     if options['backend']:
       await connect_backend()
 
-    setup_guild_events(bot, )
 
 
 
