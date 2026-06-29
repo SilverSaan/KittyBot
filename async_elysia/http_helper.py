@@ -19,8 +19,13 @@ async def get_self(auth_key):
             if resp.status == 200:
                 return await resp.json()
             return None
+        
+def strip_mention(text: str) -> str:
+    import re
+    return re.sub(r'<@!?\d+>', '<USER>', text).strip()
 
 async def send_command_log(payload: dict):
+    print("Called Send")
     headers = {
         "Authorization": AUTH_KEY,
         "Content-Type": "application/json"

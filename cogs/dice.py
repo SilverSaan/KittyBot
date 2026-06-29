@@ -3,7 +3,7 @@ from discord.ext import commands
 import Dice_Processing as die
 from red_die import red as red_roll, get_head_injury, get_body_injury
 import random
-from async_elysia.http_helper import send_command_log
+from async_elysia.http_helper import send_command_log, strip_mention
 
 class DiceCommands(commands.Cog):
     def __init__(self, bot):
@@ -27,7 +27,7 @@ class DiceCommands(commands.Cog):
             _, response = die.format_roll(message)
             out = f'**{ctx.author.mention} rolled: \n' + response + '**'
             await ctx.send(out)
-            await self.log(ctx, "roll", out, message)
+            await self.log(ctx, "roll", strip_mention(out), message)
         except Exception as e:
             await ctx.send(f"Error - {e}")
 
@@ -41,7 +41,7 @@ class DiceCommands(commands.Cog):
             if crit_message:
                 string_response += crit_message
             await ctx.send(string_response)
-            await self.log(ctx, "red", string_response, message)
+            await self.log(ctx, "red", strip_mention(string_response), message)
         except Exception as e:
             await ctx.send("Invalid roll format.")
 
@@ -49,13 +49,13 @@ class DiceCommands(commands.Cog):
     async def crithead(self, ctx):
         response = get_head_injury()
         await ctx.send(response)
-        await self.log(ctx, "crithead", response)
+        await self.log(ctx, "crithead", strip_mention(response))
 
     @commands.hybrid_command()
     async def critbody(self, ctx):
         response = get_body_injury()
         await ctx.send(response)
-        await self.log(ctx, "critbody", response)
+        await self.log(ctx, "critbody", strip_mention(response))
 
     @commands.hybrid_command()
     async def dchance(self, ctx, chance):
@@ -79,7 +79,7 @@ class DiceCommands(commands.Cog):
                 out = f"{ctx.author.mention} **Failed!** Rolled {value} on the chance of {ch}%!"
 
             await ctx.send(out)
-            await self.log(ctx, "dchance", out, chance)
+            await self.log(ctx, "dchance", strip_mention(out), chance)
 
         except ValueError:
             await ctx.send(f"{ctx.author.mention} please input a valid number")
@@ -90,7 +90,7 @@ class DiceCommands(commands.Cog):
         response = die.initialScoreRoll()
         out = "I'm not supposed to be used for DnD but here's your Initial Scores for it choom. /ᐠ - ⩊ -マ Ⳋ\n" + response
         await ctx.send(out)
-        await self.log(ctx, "iscore", out)
+        await self.log(ctx, "iscore", strip_mention(out))
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -113,7 +113,7 @@ class DiceCommands(commands.Cog):
                     "guild_discord_id": str(message.guild.id),
                     "user_nickname": message.author.display_name,
                     "request_message": expr,
-                    "response": out,
+                    "response": strip_mention(out),
                 })
             except Exception:
                 pass
