@@ -1,41 +1,38 @@
 # KittyBot
 
-Kitty is a Discord bot designed to enhance your experience with Cyberpunk Red, the tabletop role-playing game. 
-Whether you're a Game Master seeking to streamline your campaign management or a player looking for quick references and utilities, Kitty is here to assist you.
+KittyBot is a Discord bot designed to streamline your Cyberpunk Red tabletop role-playing sessions. Whether you're a Game Master trying to improvise a Night Market on the fly or a Player hunting for the meaning of a corporate slur, Kitty has your back.
 
-# Features
+---
 
-## Dice Rolling
+## Features
 
-Roll dice directly within Discord using simple commands:
+### Dice Rolling
+No need to open a separate app. Kitty handles Cyberpunk Red's specific dice math natively.
+*   `/red d10` – Rolls a standard CPR d10. Automatically handles exploding 10s (rolls again and adds) and imploding 1s (rolls again and subtracts).
+*   `/red 4d6` – Rolls damage. If two or more 6s are rolled, it flags a Critical Injury automatically.
+*   `/roll <n>d<x>` – A standard, universal dice roller for any other gaming needs.
 
-- `/red d10`: Rolls a D10 based on Cyberpunk Red's d10 logic, it will roll a d10 and add/subtract the value to it on a 10/1.
-- `/red 4d6`: Rolls D6's based on Cyberpunk Red's damage logic. If two sixes are rolled, it will automatically roll for critical damage.
-- `/roll ndx`: *x* and *n* must be numbers. This command rolls any dice.
+### Reference Lookup
+Never get lost in translation in the Time of the Red.
+*   `/streetslang <term>` – Direct definition search (e.g., `/streetslang choom`).
+*   `/streetslang search <query>` – Searches both keys and descriptions for a keyword.
+*   `/streetslang random` – Feeds you a random piece of slang to spice up your roleplay.
 
-## Reference Lookup (TODO)
-Ever had doubts on how to speak streetslang? the comand `/streetslang` can be used to know what a streetslang means:
+### Random Generators
+Instantly manifest assets locally.
+*   **Character Generation:** Instantly builds an NPC using the *Streetrat* rules from the CPR Core Rulebook.
+*   **Net Architecture:** Generates complete Net Architectures (Powered by [NetGenerator](https://github.com/MildarAA/NetGenerator)).
+*   **Night Markets:** Spawns a fully stocked Night Market instantly (Powered by [Night Market Generator](https://gitlab.com/shindranel/night-market-generator)).
 
-- `/streetslang search choom` - Searches for streetslang that has choom in key or description
-- `/streetslang choom` - Searches for the meaning of choom
-- `/streetslang list` - Sends list of slang via DM (This one may fail because list is too extensive, too bad)
-- `/streetslang random` - Get a random term
+---
 
+## Support & Feedback
 
+Encountered a bug? Have an idea for a cool new feature? 
+*   **Support Server:** [Join our Discord Server](#) *(Link Coming Soon)*
+*   **Developer Contact:** pedrohpss@tutamail.com
 
+---
 
-## Random Generators 
-Generate random NPCs, locations, items, night markets and more to spark creativity and add depth to your game.
-- Made Character Generation According to the Streetrat rules on CPR Core
-- Made Net Architecture Generation using https://github.com/MildarAA/NetGenerator
-- Made Night Market Generation command using https://gitlab.com/shindranel/night-market-generator/-/blob/master/night_market_generator.py 
-
-Support and Feedback
-
-If you encounter any issues, have suggestions for improvements, or just want to chat about Cyberpunk Red, feel free to join our support server TODO or contact the developer directly at pedrohpss@gmail.com
-
-
-
-
-**_Cyberpunk Red is a trademark of R. Talsorian Games. KittyBot is not affiliated with or endorsed by R. Talsorian Games._**
-
+## Legal
+*Cyberpunk Red is a trademark of R. Talsorian Games. KittyBot is an independent fan project and is not affiliated with or endorsed by R. Talsorian Games.*
