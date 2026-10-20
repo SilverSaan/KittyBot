@@ -64,12 +64,14 @@ async def load_cogs():
     from cogs.dice import DiceCommands
     from cogs.tablegen import TableGenerator
     from cogs.utilities import LunarUtils
+    from cogs.auction import Auction
 
     #Add Cogs
     await bot.add_cog(DiceCommands(bot))
     await bot.add_cog(LunarUtils(bot))
 
     await bot.add_cog(TableGenerator(bot, get_data))
+    await bot.add_cog(Auction(bot))
 
 
 @bot.hybrid_command()
@@ -88,6 +90,7 @@ async def help(ctx):
     embed.add_field(name="🎲 Dice Commands", value=
         "**/roll <expr>** - Rolls any dice expression (e.g., 2d6+3)\n"
         "**/red <expr>** - Rolls Cyberpunk Red style dice (d10s with crits)\n"
+        "**/check <stat> <skill> <DV>** - Rolls a Cyberpunk RED skill check\n"
         "**/crithead** - Generates a head critical injury\n"
         "**/critbody** - Generates a body critical injury\n"
         "**/dchance <percent>** - Rolls a chance check (1-100)\n"

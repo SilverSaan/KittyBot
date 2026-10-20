@@ -14,26 +14,30 @@ DIFFICULTY_INFO = {
 }
 
 class Floor:
-    def __init__(self,level):
+    """A node in a generated NET architecture tree."""
+
+    def __init__(self, level):
         self.level = level
         self.is_edge = True
         self.childs = []
         self.id = 0
         self.occupancy = -1
-    def addChild(self,floor):
+
+    def addChild(self, floor):
         self.is_edge = False
         self.childs.append(floor)
+
+
 class FloorSelector:
     def __init__(self):
-        self.selected = []
-        for i in range(19):
-            self.selected.append(False)
+        self.selected = [False] * 19
+
     def getRandom(self):
         rolled = roll3D6()
-        while(self.selected[rolled]):
+        while self.selected[rolled]:
             rolled = roll3D6()
         self.selected[rolled] = True
-        return rolled 
+        return rolled
 
 def rollD6():
     return random.randint(1,6)
@@ -119,80 +123,85 @@ def printArchitecture(floors):
 So maximal branches is: size - 4  
 '''
 def getNumberOfBraches(size):
-    maxBranches = size - 4
-    n_branches = 0
-    while (n_branches < maxBranches):
-        if (rollD10() >= 5):
-            n_branches +=1
+    """Roll the number of branches, bounded by the available floor count."""
+    max_branches = size - 4
+    branch_count = 0
+    while branch_count < max_branches:
+        if rollD10() >= 5:
+            branch_count += 1
         else:
             break
-    return n_branches
+    return branch_count
 
-def findNodeCandidate(all_floors, depth,can_be_edge,can_be_node):
+
+def findNodeCandidate(all_floors, depth, can_be_edge, can_be_node):
+    """Choose an eligible interior node to extend or branch from."""
     candidates = []
     for floor in all_floors:
-        if (floor.level == 1) or (floor.level >= depth-1):
+        if floor.level == 1 or floor.level >= depth - 1:
             continue
-        if ((floor.is_edge) and (can_be_edge)) or ((not floor.is_edge) and (can_be_node)):
+        if (floor.is_edge and can_be_edge) or (not floor.is_edge and can_be_node):
             candidates.append(floor)
-    #it is not perfect If no candidate is found, just deepen it and be done with it
+
+    # If no eligible interior node exists, continue from the deepest floor.
     if len(candidates) == 0:
         for floor in all_floors:
             if floor.level == depth:
                 return floor
 
-    selected_id = random.randint(0,len(candidates)-1)
-    return candidates[selected_id]
+    selected_index = random.randint(0, len(candidates) - 1)
+    return candidates[selected_index]
 
 def getArchitecture():
-    n_floors = roll3D6()
-    n_branches = getNumberOfBraches(n_floors)
-    print ("floors:" + str(n_floors) + " branches:" + str(n_branches))
-    if n_branches > 0:
-        min_size_of_logest_branch = 4
-        max_size_of_longest_branch = n_floors - n_branches
-        #use normal distribution for depth instead linear. lets make edge cases less happening
-        #Also for dice game lets use dice-like method instead Gauss random
-        depth = round((random.randint(min_size_of_logest_branch,max_size_of_longest_branch) + random.randint(min_size_of_logest_branch,max_size_of_longest_branch))/2)
-    else:
-        depth = n_floors
-    #construct main brainch
-    all_floors = []
-    #entrance
-    floor = Floor(1)
-    all_floors.append(floor)
-    #other levels
-    level = 1
-    lastfloor = floor
-    for i in range(2,depth+1):
-        level +=1
-        floor = Floor(level)
-        lastfloor.addChild(floor)
-        all_floors.append(floor)
-        lastfloor = floor
-    # add rest of floors and create branches
-    if n_branches > 0:
-        remaining_nodes = n_floors - depth
-        remaining_branches = n_branches
-        can_be_node = True
-        can_be_edge = True
-        while (remaining_nodes >0):
-            if remaining_nodes == remaining_branches:
-                can_be_edge = False
-            if remaining_branches == 0:
-                can_be_node = False 
-            lastfloor = findNodeCandidate(all_floors,depth,can_be_edge,can_be_node)
-            # if no candidate was found the NET got deeper
-            if lastfloor.level == depth:
-                depth +=1
-            if not lastfloor.is_edge:
-                remaining_branches -=1
-            floor = Floor(lastfloor.level + 1)
-            lastfloor.addChild(floor)
-            all_floors.append(floor)
-            remaining_nodes -=1
+    floor_count = roll3D6()
+    branch_count = getNumberOfBraches(floor_count)
+    print(f"floors:{floor_count} branches:{branch_count}")
 
-    return all_floors
+    if branch_count > 0:
+        minimum_depth = 4
+        maximum_depth = floor_count - branch_count
+        # Averaging two uniform rolls makes extreme depths less common.
+        depth = round((
+            random.randint(minimum_depth, maximum_depth)
+            + random.randint(minimum_depth, maximum_depth)
+        ) / 2)
+    else:
+        depth = floor_count
+
+    # Build the initial unbranched path from the NET entrance.
+    floors = [Floor(1)]
+    last_floor = floors[0]
+    for level in range(2, depth + 1):
+        floor = Floor(level)
+        last_floor.addChild(floor)
+        floors.append(floor)
+        last_floor = floor
+
+    if branch_count > 0:
+        remaining_floors = floor_count - depth
+        remaining_branches = branch_count
+        can_branch_from_node = True
+        can_extend_edge = True
+
+        while remaining_floors > 0:
+            if remaining_floors == remaining_branches:
+                can_extend_edge = False
+            if remaining_branches == 0:
+                can_branch_from_node = False
+
+            parent_floor = findNodeCandidate(
+                floors, depth, can_extend_edge, can_branch_from_node
+            )
+            if parent_floor.level == depth:
+                depth +=1
+            if not parent_floor.is_edge:
+                remaining_branches -=1
+            floor = Floor(parent_floor.level + 1)
+            parent_floor.addChild(floor)
+            floors.append(floor)
+            remaining_floors -=1
+
+    return floors
     
     #for floor in all_floors:
     #	print (f"level:{floor.level},edge:{floor.is_edge},childs:{len(floor.childs)}")

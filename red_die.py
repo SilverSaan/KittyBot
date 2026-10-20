@@ -138,5 +138,23 @@ def red(expr):
         critical_message += "Effect: " + body_crits[injury]["Effect"]
         
     return message, critical_message
+
+
+def skill_check(stat, skill, dv):
+    if stat < 0 or skill < 0 or dv < 1:
+        raise ValueError("STAT and Skill must be non-negative, and DV must be positive")
+
+    initial_roll = dp.roll_dice("1d10")[0][0]
+    critical_roll = None
+    total = initial_roll + stat + skill
+
+    if initial_roll == 10:
+        critical_roll = dp.roll_dice("1d10")[0][0]
+        total += critical_roll
+    elif initial_roll == 1:
+        critical_roll = dp.roll_dice("1d10")[0][0]
+        total -= critical_roll
+
+    return total, initial_roll, critical_roll, total >= dv
     
 

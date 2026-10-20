@@ -2,7 +2,7 @@
 
 from random import randrange
 
-#list hell
+# Market categories and their possible stock.
 market_types = ['Food and Drugs', 'Personal Electronics', 'Weapons and Armor', 'Cyberware',
 		'Clothing and Fashionware', 'Survival Gear']
 food_list = ['Canned Goods, 10eb', 'Packaged goods, 10eb', 'Frozen Goods, 10eb', 'Bags of Grain, 20eb',
@@ -71,9 +71,9 @@ QUALITY_MULTIPLIERS = {
     2: {50: 100, 100: 500, 500: 1000}    # Excellent
 }
 
-###Functions and classes
+class Weapon:
+	"""A generated weapon and the market quality that determines its price."""
 
-class Weapon():
 	def __init__(self):
 		self.type = ''
 		self.price = 0
@@ -94,21 +94,12 @@ class Weapon():
 		
 		self.price = QUALITY_MULTIPLIERS.get(self.quality, {}).get(price, price)
 		
-def check_sim(liste, numb):
-	i = len(liste)
-	j = 0
-	trigger = 0
-	while (i > j):
-		if (liste[j] == numb):
-			trigger = 1
-		j = j + 1
-	return (trigger)
-
-def fill_list(n, dice):
-    result = set()
-    while len(result) < n:
-        result.add(randrange(dice))
-    return list(result)
+def fill_list(number_of_items, number_of_options):
+    """Select unique option indexes using the original repeated-roll method."""
+    selected = set()
+    while len(selected) < number_of_items:
+        selected.add(randrange(number_of_options))
+    return list(selected)
 
 def gun_generator(roll):
 	gun = Weapon()
@@ -119,94 +110,60 @@ def gun_generator(roll):
 	return (gun)
 
 def gun_reader(gun_list):
-	string_result = ""
+	lines = []
 	for gun in gun_list:
-		string_result += f'- {gun.type}'
-		if (gun.quality_trig):
-			string_result += '(' + f'{quality_list[gun.quality]}' + ' Quality), sold at '
-			if (gun.price):
-				string_result += str(int(gun.price))+'eb\n'
-			else:
-				string_result += 'the appropriate price\n'
+		line = f'- {gun.type}'
+		if gun.quality_trig:
+			line += f'({quality_list[gun.quality]} Quality), sold at '
+			line += f'{int(gun.price)}eb\n' if gun.price else 'the appropriate price\n'
 		else:
-			string_result += ' \n'
-	return string_result
+			line += ' \n'
+		lines.append(line)
+	return ''.join(lines)
 
 def check_guns(mtvar):
-	if (mtvar[0] != 2 and mtvar[1] != 2):
-		return(0)
-	else:
-		return(1)
+	return int(2 in mtvar)
 
 def gen_gun_list(gun_numbers):
-	i = len(gun_numbers)
-	j = 0
-	gun_list = []
-	while(j < i):
-		gun_list.append(gun_generator(gun_numbers[j]))
-		j = j + 1
-	return gun_reader(gun_list)
+	return gun_reader([gun_generator(number) for number in gun_numbers])
+
+
+def format_category_items(category_index, item_indexes):
+	"""Format selected stock, applying weapon quality rules when applicable."""
+	if category_index == 2:
+		return gen_gun_list(item_indexes)
+	return ''.join(
+		f'- {market_types_lists[category_index][item_index]}\n'
+		for item_index in item_indexes
+	)
 
 def main():
-		
-	###Market type
-	market_type_var = [0, 0]
-	trigger = 0
-	for i in market_type_var:
-		i = randrange(6)
-		if (trigger == 1):
-			while (market_type_var[0] == i):
-				i = randrange(6)
-		market_type_var[trigger] = i
-		trigger = 1
+	"""Generate and format a market with two distinct categories."""
+	first_category = randrange(6)
+	second_category = randrange(6)
+	while second_category == first_category:
+		second_category = randrange(6)
+	category_indexes = [first_category, second_category]
 
-	###Item number for every category
+	item_counts = [randrange(10) + 1, randrange(10) + 1]
+	selected_items = [fill_list(count, 20) for count in item_counts]
+	contains_weapons = check_guns(category_indexes)
 
-	items_number = [randrange(10) + 1, randrange(10) + 1]
-	i = 0
-	
-	first_list = fill_list(items_number[0], 20)
-	second_list = fill_list(items_number[1], 20)
+	output = 'Welcome, choomba!\nThis Night Market is selling:\n'
+	for category_index in category_indexes:
+		output += f'**{market_types[category_index]}**\n'
+	output += (
+		f"\nThere's {item_counts[0]} items of the first category, "
+		f"and {item_counts[1]} items of the second.\n"
+		'\nOn the stand, you can find:\n\n'
+	)
 
-	### Quality of Weapons
-	print_stream = ""
+	for category_index, item_indexes in zip(category_indexes, selected_items):
+		output += format_category_items(category_index, item_indexes)
 
-
-	#Print infos
-	reminder = 0
-	print_stream +='Welcome, choomba!\nThis Night Market is selling:\n'
-	for i in market_type_var:
-		print_stream += f'**{market_types[i]}**\n'  # Bold category names
-	if (not(check_guns(market_type_var))):
-		print_stream += '\nThere\'s ' + f'{items_number[0]}' + ' items of the first category, and ' + f'{items_number[1]}' + ' items of the second.\n'
-		print_stream += '\nOn the stand, you can find:\n\n'
-		
-	
-		for i in first_list:
-			print_stream += f'- {market_types_lists[market_type_var[0]][i]}\n'
-
-		for i in second_list:
-			print_stream += f'- {market_types_lists[market_type_var[1]][i]}\n'
-
-	else:
-		print_stream += '\nThere\'s ' + f'{items_number[0]}' + ' items of the first category, and ' + f'{items_number[1]}' + ' items of the second.\n'
-		print_stream += '\nOn the stand, you can find:\n\n'
-		if (market_type_var[0] != 2):
-			for i in first_list:
-				print_stream += f'- {market_types_lists[market_type_var[0]][i]}\n'
-
-		else:
-			print_stream += gen_gun_list(first_list)
-			reminder = 1
-			
-		if (market_type_var[1] != 2):
-			for i in second_list:
-				print_stream += f'- {market_types_lists[market_type_var[1]][i]}\n'
-		else:
-			print_stream += gen_gun_list(second_list)
-			reminder = 1
-
-	if (reminder):
-		print_stream += "\n\nA little reminder for you, choom: a Poor Quality weapon jam on a roll of one, and an Excellent \
-Quality weapon gives you +1 on all attack checks.\n"
-	return print_stream
+	if contains_weapons:
+		output += (
+			"\n\nA little reminder for you, choom: a Poor Quality weapon jam on a roll of one, "
+			"and an Excellent Quality weapon gives you +1 on all attack checks.\n"
+		)
+	return output

@@ -1,7 +1,7 @@
 import re
 from discord.ext import commands
 import Dice_Processing as die
-from red_die import red as red_roll, get_head_injury, get_body_injury
+from red_die import red as red_roll, skill_check as red_skill_check, get_head_injury, get_body_injury
 import random
 from async_elysia.http_helper import send_command_log, strip_mention
 
@@ -44,6 +44,27 @@ class DiceCommands(commands.Cog):
             await self.log(ctx, "red", strip_mention(string_response), message)
         except Exception as e:
             await ctx.send("Invalid roll format.")
+
+    @commands.hybrid_command()
+    async def check(self, ctx, stat: int, skill: int, dv: int):
+        """Roll a Cyberpunk RED skill check: STAT + Skill + 1d10 vs DV."""
+        try:
+            total, initial_roll, critical_roll, success = red_skill_check(stat, skill, dv)
+            breakdown = f"1d10({initial_roll})"
+            if critical_roll is not None:
+                operator = "+" if initial_roll == 10 else "-"
+                breakdown += f" {operator} 1d10({critical_roll})"
+            breakdown += f" + STAT {stat} + Skill {skill} = {total} vs DV {dv}"
+            outcome = "SUCCESS" if success else "FAILURE"
+            if initial_roll == 10:
+                outcome += " (Critical Success)"
+            elif initial_roll == 1:
+                outcome += " (Critical Failure)"
+            out = f"**{ctx.author.mention} skill check:** {breakdown}\n**{outcome}**"
+            await ctx.send(out)
+            await self.log(ctx, "check", strip_mention(out), f"{stat} {skill} {dv}")
+        except ValueError as e:
+            await ctx.send(f"Invalid skill check: {e}")
 
     @commands.hybrid_command()
     async def crithead(self, ctx):

@@ -10,6 +10,7 @@ KittyBot is a Discord bot designed to streamline your Cyberpunk Red tabletop rol
 No need to open a separate app. Kitty handles Cyberpunk Red's specific dice math natively.
 *   `/red d10` – Rolls a standard CPR d10. Automatically handles exploding 10s (rolls again and adds) and imploding 1s (rolls again and subtracts).
 *   `/red 4d6` – Rolls damage. If two or more 6s are rolled, it flags a Critical Injury automatically.
+*   `/check <stat> <skill> <DV>` – Rolls a skill check with critical 10/1 handling.
 *   `/roll <n>d<x>` – A standard, universal dice roller for any other gaming needs.
 
 ### Reference Lookup
