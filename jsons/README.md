@@ -21,6 +21,7 @@ Skill names are descriptive lookup keys, not a normalized vocabulary. Their capi
 
 - `cat.json` is a list of strings used as cat expressions.
 - `moons/<year>.json` contains lunar phase events with `Date` and `Phase` fields. These files are cached data, not fixed game tables.
+- `night_market.json` stores market category stock and weapon prices used by `night_market_generator.py`.
 
 ## Validation
 
